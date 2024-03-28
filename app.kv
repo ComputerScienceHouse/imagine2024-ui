@@ -1,8 +1,31 @@
 MDScreen:
     md_bg_color: self.theme_cls.backgroundColor
 
-    MDButton:
-        pos_hint:{'center_x': .5, 'center_y': .5}
+<MemberCard>
+    orientation: 'vertical'
+    size_hint: None, None
+    size: "144dp", "170dp"
+        
+    MDLabel:
+        font_style: "Display"
+        role: "small"
+        text: root.name
+        color: "black"
+        halign: "center"
+        padding: "2dp", "2dp"
 
-        MDButtonText:
-            text: 'Hello World'
+    MDLabel:
+        font_style: "Title"
+        role: "small"
+        text: root.job_title
+        color: "black"
+        halign: "center"
+        padding: "4dp", "4dp"
+
+    MDLabel:
+        font_style: "Title"
+        role: "medium"
+        text: root.major
+        color: "black"
+        halign: "center"
+        padding: "4dp", "4dp"
