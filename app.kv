@@ -16,15 +16,28 @@ ScreenManager:
         md_bg_color: self.theme_cls.backgroundColor
         name: 'Start'
 
-        MDLabel:
-            text: 'Start'
+        RelativeLayout:
 
-        MDButton:
-            style: 'filled'
-            on_press: root.current = 'Info'
-            
-            MDButtonText:
-                text:'Go to Info'
+            MDIconButton:
+                pos_hint: {'center_x': 0.9, 'center_y': 0.9}
+                icon: 'information-outline'
+                style: 'filled'
+                on_press:
+                    root.transition.direction = 'up'
+                    root.current = 'Info'
+
+            Image:
+                source: 'images/logo.png'
+
+            MDButton:
+                pos_hint: {'center_x': 0.5, 'center_y': 0.2}
+                style: 'filled'
+                on_press:
+                    root.transition.direction = 'left'
+                    root.current = 'Cart'
+                
+                MDButtonText:
+                    text:'Go to Cart'
 
     CartScreen:
         md_bg_color: self.theme_cls.backgroundColor
@@ -39,6 +52,15 @@ ScreenManager:
 
         GridLayout:
             cols:2
+
+            MDButton:
+                style: 'filled'
+                on_press:
+                    root.transition.direction = 'down'
+                    root.current = 'Start'
+                
+                MDButtonText:
+                    text:'Back to Start'
 
             MemberCard:
                 name: 'Wilson'
