@@ -1,5 +1,70 @@
-MDScreen:
-    md_bg_color: self.theme_cls.backgroundColor
+# Bits n' Bytes UI Kivy Definitions
+# Author: Wilson McDade
+###########################
+
+
+###########################
+#
+#   Define Screens:
+#
+###########################
+
+ScreenManager:
+    id: sm
+
+    StartScreen:
+        md_bg_color: self.theme_cls.backgroundColor
+        name: 'Start'
+
+        MDLabel:
+            text: 'Start'
+
+        MDButton:
+            style: 'filled'
+            on_press: root.current = 'Info'
+            
+            MDButtonText:
+                text:'Go to Info'
+
+    CartScreen:
+        md_bg_color: self.theme_cls.backgroundColor
+        name: 'Cart'
+
+        MDLabel:
+            text: 'Cart'
+
+    InfoScreen:
+        md_bg_color: self.theme_cls.backgroundColor
+        name: 'Info'
+
+        GridLayout:
+            cols:2
+
+            MemberCard:
+                name: 'Wilson'
+                job_title: 'Cool Guy'
+                major: 'CS'
+
+            MemberCard:
+                name: 'Sahil'
+                job_title: 'Cool Guy'
+                major: 'CS'
+
+            MemberCard:
+                name: 'Jason'
+                job_title: 'Cool Guy'
+                major: 'CS'
+
+            MemberCard:
+                name: 'Isaac'
+                job_title: 'Cool Guy'
+                major: 'CS'
+
+###########################
+#
+#   Define Custom Widgets:
+#
+###########################
 
 <MemberCard>
     orientation: 'vertical'

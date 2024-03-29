@@ -2,11 +2,22 @@ from kivymd.app import MDApp
 from kivymd.uix.label import MDLabel
 from kivymd.uix.boxlayout import BoxLayout
 from kivymd.uix.card import MDCard
+from kivymd.uix.screenmanager import ScreenManager
+from kivymd.uix.screen import MDScreen
 
 from kivy.properties import StringProperty
 from kivy.lang import Builder
 from kivy.config import Config
 from kivy.core.window import Window
+
+class InfoScreen(MDScreen):
+    pass
+
+class CartScreen(MDScreen):
+    pass
+
+class StartScreen(MDScreen):
+    pass
 
 class MemberCard(MDCard):
     name = StringProperty()
@@ -21,11 +32,7 @@ class MainApp(MDApp):
 
         self.root.add_widget(Builder.load_file('app.kv'))
 
-        print(self.root.ids)
-
-        self.root.add_widget(
-            MemberCard(name="Wilson", job_title="Cool guy", major="CS")
-        )
+        self.root.children[0].current = 'Start'
 
 if __name__ == "__main__":
 
