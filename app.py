@@ -4,11 +4,13 @@ from kivymd.uix.boxlayout import BoxLayout
 from kivymd.uix.card import MDCard
 from kivymd.uix.screenmanager import ScreenManager
 from kivymd.uix.screen import MDScreen
+from kivymd.uix.list.list import MDListItem
 
 from kivy.properties import StringProperty
 from kivy.lang import Builder
 from kivy.config import Config
 from kivy.core.window import Window
+from kivy.uix.widget import Widget
 
 class InfoScreen(MDScreen):
     pass
@@ -18,6 +20,16 @@ class CartScreen(MDScreen):
 
 class StartScreen(MDScreen):
     pass
+
+class CartItem(MDListItem):
+    title = StringProperty()
+    source = StringProperty()
+    price = StringProperty()
+    quantity = StringProperty()
+
+class ImageButton(Widget):
+    source = StringProperty()
+    text = StringProperty()
 
 class MemberCard(MDCard):
     name = StringProperty()

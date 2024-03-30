@@ -18,6 +18,12 @@ ScreenManager:
 
         RelativeLayout:
 
+            # Still working on this, lets leave it out for now
+            #ImageButton:
+            #    source: 'images/tapIcon.png'
+            #    text: 'Tap card to start'
+
+            # How can we make this bigger?
             MDIconButton:
                 pos_hint: {'center_x': 0.9, 'center_y': 0.9}
                 icon: 'information-outline'
@@ -29,11 +35,14 @@ ScreenManager:
             Image:
                 source: 'images/logo.png'
 
+            ### Remove this once NFC works :tm:
             MDButton:
                 pos_hint: {'center_x': 0.5, 'center_y': 0.2}
                 style: 'filled'
                 on_press:
+                    # Change transition direction
                     root.transition.direction = 'left'
+                    # Set current screen to Cart
                     root.current = 'Cart'
                 
                 MDButtonText:
@@ -43,24 +52,61 @@ ScreenManager:
         md_bg_color: self.theme_cls.backgroundColor
         name: 'Cart'
 
-        MDLabel:
-            text: 'Cart'
+        # This should be a scrollview pls make this a scrollview
+        BoxLayout:
+            orientation: 'vertical'
+            width: 2*root.width/3
+
+            CartItem:
+                title: 'Jolt Soda'
+                source: 'images/oof.png'
+                price: '3.00'
+                quantity: '3'
+
+            CartItem:
+                title: 'Jolt Soda'
+                source: 'images/oof.png'
+                price: '3.00'
+                quantity: '3'
+
+            CartItem:
+                title: 'Jolt Soda'
+                source: 'images/oof.png'
+                price: '3.00'
+                quantity: '3'
+
+            CartItem:
+                title: 'Jolt Soda'
+                source: 'images/oof.png'
+                price: '3.00'
+                quantity: '3'
+
+        ### Do not leave this in
+        MDButton:
+            pos_hint: {'center_x': 0.5, 'center_y': 0.2}
+            style: 'filled'
+            on_press:
+                root.transition.direction = 'right'
+                root.current = 'Start'
+
+            MDButtonText:
+                text:'Go to Start'
 
     InfoScreen:
         md_bg_color: self.theme_cls.backgroundColor
         name: 'Info'
 
+        MDButton:
+            style: 'filled'
+            on_press:
+                root.transition.direction = 'down'
+                root.current = 'Start'
+            
+            MDButtonText:
+                text:'Back to Start'
+
         GridLayout:
             cols:2
-
-            MDButton:
-                style: 'filled'
-                on_press:
-                    root.transition.direction = 'down'
-                    root.current = 'Start'
-                
-                MDButtonText:
-                    text:'Back to Start'
 
             MemberCard:
                 name: 'Wilson'
@@ -87,6 +133,43 @@ ScreenManager:
 #   Define Custom Widgets:
 #
 ###########################
+
+<ImageButton>
+    RelativeLayout:
+        size: (626, 110)
+        
+        # I think this is the only way to get a rounded rectangle on the screen.
+        #   It doesn't need to be a button so this should be fine right
+        canvas:
+            Color:
+                rgb: 0.42, 0.0, 0.39
+            RoundedRectangle:
+                size: self.size
+                pos: self.pos
+                radius: [(20, 20), (20, 20), (20, 20), (20, 20)]
+
+        Image:
+            pos_hint: {'center_x': 0.2, 'center_y': 0.5}
+            source: root.source
+
+        MDLabel:
+            text: root.text
+
+<CartItem>
+    size: "144dp", "170dp"
+
+    Image:
+        source: root.source
+
+    MDLabel:
+        text: root.title
+
+    MDLabel:
+        text: root.price
+
+    MDLabel:
+        font_style: 'Display'
+        text: root.quantity
 
 <MemberCard>
     orientation: 'vertical'
