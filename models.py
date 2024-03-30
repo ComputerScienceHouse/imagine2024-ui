@@ -7,12 +7,14 @@ class User:
         self.email = ""
         self.phone = ""
 
+
 class Item:
     def __init__(self, name, price, avg_weight, std_weight):
         self.name = name
         self.price = price
         self.avg_weight = avg_weight
         self.std_weight = std_weight
+
 
 class Stock:
     def __init__(self):
@@ -23,6 +25,7 @@ class Stock:
             self.items[item] += 1
         else:
             self.items[item] = 1
+
 
 class Cart:
     def __init__(self):

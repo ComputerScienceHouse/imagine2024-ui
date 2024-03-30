@@ -12,14 +12,18 @@ from kivy.config import Config
 from kivy.core.window import Window
 from kivy.uix.widget import Widget
 
+
 class InfoScreen(MDScreen):
     pass
+
 
 class CartScreen(MDScreen):
     pass
 
+
 class StartScreen(MDScreen):
     pass
+
 
 class CartItem(MDListItem):
     title = StringProperty()
@@ -27,14 +31,17 @@ class CartItem(MDListItem):
     price = StringProperty()
     quantity = StringProperty()
 
+
 class ImageButton(Widget):
     source = StringProperty()
     text = StringProperty()
+
 
 class MemberCard(MDCard):
     name = StringProperty()
     job_title = StringProperty()
     major = StringProperty()
+
 
 class MainApp(MDApp):
     def build(self):
@@ -45,6 +52,7 @@ class MainApp(MDApp):
         self.root.add_widget(Builder.load_file('app.kv'))
 
         self.root.children[0].current = 'Start'
+
 
 if __name__ == "__main__":
 
