@@ -24,6 +24,9 @@ class CartScreen(MDScreen):
 class StartScreen(MDScreen):
     pass
 
+class AttractScreen(MDScreen):
+    pass
+
 
 class CartItem(MDListItem):
     title = StringProperty()
