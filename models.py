@@ -9,11 +9,12 @@ class User:
 
 
 class Item:
-    def __init__(self, name, price, avg_weight, std_weight):
+    def __init__(self, name, price, avg_weight, std_weight, thumbnail):
         self.name = name
         self.price = price
         self.avg_weight = avg_weight
         self.std_weight = std_weight
+        self.thumbnail = thumbnail
 
 
 class Stock:
