@@ -9,12 +9,19 @@ class User:
 
 
 class Item:
-    def __init__(self, name, price, avg_weight, std_weight, thumbnail):
+    def __init__(
+            self, item_id, name, upc, price, units, avg_weight, std_weight,
+            thumbnail, vision_class
+    ):
+        self.item_id = item_id
         self.name = name
+        self.upc = upc
         self.price = price
+        self.units = units
         self.avg_weight = avg_weight
         self.std_weight = std_weight
         self.thumbnail = thumbnail
+        self.vision_class = vision_class
 
 
 class Stock:
