@@ -1,11 +1,11 @@
 class User:
-    def __init__(self, uid, name, balance, payment_type):
+    def __init__(self, uid, name, balance, payment_type, email, phone):
         self.uid = uid
         self.name = name
         self.balance = balance
         self.payment_type = payment_type
-        self.email = ""
-        self.phone = ""
+        self.email = email
+        self.phone = phone
 
 
 class Item:
