@@ -84,3 +84,54 @@ def get_item(item_id: int) -> Item | None:
         # TODO implement GET(item)
         pass
 
+
+def get_user(user_id=None, user_token=None) -> User | None:
+    """
+    Get user from either the user id or token
+    :param user_id: Optional User ID
+    :param user_token: Optional User Token
+    :return: A User or None if the User does not exist or no identifier (ID or
+    token) was provided
+    """
+    # Check if user token should be used
+    if user_token is not None:
+        if USE_MOCK_DATA:
+            # Look through users to find one with the right token
+            for user in MOCK_USERS.values():
+                if user.token == user_token:
+                    return user
+            return None
+        else:
+            # TODO implement GET(user from token)
+            pass
+    # Check if user ID should be used
+    elif user_id is not None:
+        if USE_MOCK_DATA:
+            # Get user from ID
+            if user_id in MOCK_USERS:
+                return MOCK_USERS[user_id]
+            else:
+                return None
+        else:
+            # TODO implement GET(user from id)
+            pass
+    # Can't use token or ID so return None
+    else:
+        return None
+
+
+def update_user(new_user: User) -> User | None:
+    """
+    Update a User
+    :param new_user: Updated User
+    :return: The new User if the update was successful, otherwise None
+    """
+    if USE_MOCK_DATA:
+        if new_user.uid in MOCK_USERS:
+            MOCK_USERS[new_user.uid] = new_user
+            return new_user
+        else:
+            return None
+    else:
+        # TODO implement PUT(user)
+        pass
