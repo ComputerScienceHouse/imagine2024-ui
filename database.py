@@ -7,13 +7,14 @@
 # Purpose: Provide a connection to the database
 #
 ###############################################################################
-import copy
 import os
+import requests
 
 from models import User, Item
 from typing import List
 
-API_ENDPOINT = ""
+API_ENDPOINT = os.getenv("BNB_API_ENDPOINT", '')
+AUTHORIZATION_KEY = os.getenv("BNB_AUTHORIZATION_KEY", '')
 
 MOCK_ITEMS = {
     1: Item(1, "Mock Item 1", "123456789012", 9.99, 100, 0.5, 0.1, "item1.jpg", "rectangle"),
@@ -29,16 +30,16 @@ MOCK_ITEMS = {
 }
 
 MOCK_USERS = {
-    1: User(1, "John Doe", 20.00, "credit", "john.doe@example.com", "+1234567890"),
-    2: User(2, "Jane Smith", 13.75, "dining", "jane.smith@example.com", "+1987654321"),
-    3: User(3, "Alice Johnson", 18.33, "imagine", "alice.johnson@example.com", "+1122334455"),
-    4: User(4, "Michael Brown", 12.75, "credit", "michael.brown@example.com", "+1555123456"),
-    5: User(5, "Emily Wilson", 15.50, "dining", "emily.wilson@example.com", "+16667778888"),
-    6: User(6, "David Clark", 18.95, "imagine", "david.clark@example.com", "+17778889999"),
-    7: User(7, "Sarah Martinez", 11.99, "credit", "sarah.martinez@example.com", "+18889990000"),
-    8: User(8, "James Taylor", 17.25, "dining", "james.taylor@example.com", "+19990001111"),
-    9: User(9, "Emma Harris", 19.75, "imagine", "emma.harris@example.com", "+12344321543"),
-    10: User(10, "Daniel Anderson", 14.30, "credit", "daniel.anderson@example.com", "+15551239876"),
+    1: User(1, "John Doe", "", 20.00, "credit", "john.doe@example.com", "+1234567890"),
+    2: User(2, "Jane Smith", "", 13.75, "dining", "jane.smith@example.com", "+1987654321"),
+    3: User(3, "Alice Johnson", "", 18.33, "imagine", "alice.johnson@example.com", "+1122334455"),
+    4: User(4, "Michael Brown", "", 12.75, "credit", "michael.brown@example.com", "+1555123456"),
+    5: User(5, "Emily Wilson", "", 15.50, "dining", "emily.wilson@example.com", "+16667778888"),
+    6: User(6, "David Clark", "", 18.95, "imagine", "david.clark@example.com", "+17778889999"),
+    7: User(7, "Sarah Martinez", "", 11.99, "credit", "sarah.martinez@example.com", "+18889990000"),
+    8: User(8, "James Taylor", "", 17.25, "dining", "james.taylor@example.com", "+19990001111"),
+    9: User(9, "Emma Harris", "", 19.75, "imagine", "emma.harris@example.com", "+12344321543"),
+    10: User(10, "Daniel Anderson", "", 14.30, "credit", "daniel.anderson@example.com", "+15551239876"),
 }
 
 os.environ["USE_MOCK_DATA"] = "true"
@@ -48,26 +49,57 @@ os.environ["USE_MOCK_DATA"] = "true"
 # False.
 USE_MOCK_DATA = os.getenv("USE_MOCK_DATA", 'false').lower() == 'true'
 
+REQUEST_HEADERS = {"Authorization": AUTHORIZATION_KEY}
+
 
 def is_reachable() -> bool:
     """
     Check if the database is reachable
     :return: True if the database is reachable, False otherwise
     """
-    # TODO implement
-    return False
+    print("Check If Reachable (GET)")
+    try:
+        requests.get(API_ENDPOINT, headers=REQUEST_HEADERS)
+        return True
+    except requests.RequestException:
+        print(f"\tExperienced Request Exception")
+        return False
 
 
 def get_items() -> List[Item]:
     """
     Get all items
-    :return: A List of Item
+    :return: A List of Item. If there is an error, an empty list is returned
     """
+    print("GET /items")
     if USE_MOCK_DATA:
         return list(MOCK_ITEMS.values())
     else:
-        # TODO implement GET(items)
-        pass
+        url = API_ENDPOINT + "/items"
+        # Make request
+        response = requests.get(url, headers={"Authorization": AUTHORIZATION_KEY})
+        # Check response code
+        if response.status_code == 200:
+            # Create list of items
+            result = list()
+            for item_raw in response.json():
+                result.append(Item(
+                    item_raw['id'],
+                    item_raw['name'],
+                    item_raw['upc'],
+                    item_raw['price'],
+                    item_raw['units'],
+                    item_raw['avg_weight'],
+                    item_raw['std_weight'],
+                    item_raw['thumbnail'],
+                    item_raw['vision_class']
+                ))
+            return result
+        else:
+            # Something went wrong so print info and return empty list
+            print(f"\tReceived response {response.status_code}:")
+            print(f"\t{response.content}")
+            return list()
 
 
 def get_item(item_id: int) -> Item | None:
@@ -75,14 +107,35 @@ def get_item(item_id: int) -> Item | None:
     Get an item from its ID
     :return: An Item or None if the item does not exist
     """
+    print(f"GET /items/{item_id}")
     if USE_MOCK_DATA:
         if item_id in MOCK_ITEMS:
             return MOCK_ITEMS[item_id]
         else:
             return None
     else:
-        # TODO implement GET(item)
-        pass
+        url = API_ENDPOINT + f"/items/{item_id}"
+        # Make request
+        response = requests.get(url, headers=REQUEST_HEADERS)
+        # Check response code
+        if response.status_code == 200:
+            item = response.json()
+            return Item(
+                item['id'],
+                item['name'],
+                item['upc'],
+                item['price'],
+                item['units'],
+                item['avg_weight'],
+                item['std_weight'],
+                item['thumbnail'],
+                item['vision_class']
+            )
+        else:
+            # Something went wrong so print info and return None
+            print(f"\tReceived response {response.status_code}:")
+            print(f"\t{response.content}")
+            return None
 
 
 def get_user(user_id=None, user_token=None) -> User | None:
@@ -93,45 +146,90 @@ def get_user(user_id=None, user_token=None) -> User | None:
     :return: A User or None if the User does not exist or no identifier (ID or
     token) was provided
     """
-    # Check if user token should be used
-    if user_token is not None:
-        if USE_MOCK_DATA:
-            # Look through users to find one with the right token
+    if USE_MOCK_DATA:
+        # Check if user token should be used
+        if user_token is not None:
+            # Get user from token
+            print(f"GET /users/{user_token}")
             for user in MOCK_USERS.values():
                 if user.token == user_token:
                     return user
             return None
-        else:
-            # TODO implement GET(user from token)
-            pass
-    # Check if user ID should be used
-    elif user_id is not None:
-        if USE_MOCK_DATA:
+        # Check if user id should be used
+        elif user_id is not None:
             # Get user from ID
+            print(f"GET /users/{user_id}")
             if user_id in MOCK_USERS:
                 return MOCK_USERS[user_id]
             else:
                 return None
-        else:
-            # TODO implement GET(user from id)
-            pass
-    # Can't use token or ID so return None
-    else:
-        return None
-
-
-def update_user(new_user: User) -> User | None:
-    """
-    Update a User
-    :param new_user: Updated User
-    :return: The new User if the update was successful, otherwise None
-    """
-    if USE_MOCK_DATA:
-        if new_user.uid in MOCK_USERS:
-            MOCK_USERS[new_user.uid] = new_user
-            return new_user
+        # Can't use token or ID so return None
         else:
             return None
     else:
-        # TODO implement PUT(user)
-        pass
+        # Determine whether URL should query based on token or user ID
+        url = ""
+        if user_token is not None:
+            # Query based on token
+            print(f"GET /users/{user_token}")
+            url = API_ENDPOINT + f"/users/token?t={user_token}"
+        elif user_id is not None:
+            # Query based on user id
+            print(f"GET /users/{user_id}")
+            url = API_ENDPOINT + f"/users/{user_id}"
+        else:
+            # Neither so return None
+            return None
+
+        # Make query determined above
+        response = requests.get(url, headers=REQUEST_HEADERS)
+        # Check response code
+        if response.status_code == 200:
+            user = response.json()
+            return User(
+                user['uid'],
+                user['name'],
+                user['token'],
+                user['balance'],
+                user['payment_type'],
+                user['email'],
+                user['phone']
+            )
+        else:
+            # Something went wrong so print info and return None
+            print(f"\tReceived response {response.status_code}")
+            print(f"\t{response.content}")
+            return None
+
+
+def update_user(user: User) -> User | None:
+    """
+    Update a User
+    :param user: Updated User
+    :return: The new User if the update was successful, otherwise None
+    """
+    print(f"PUT /users/{user.uid}")
+    if USE_MOCK_DATA:
+        if user.uid in MOCK_USERS:
+            MOCK_USERS[user.uid] = user
+            return user
+        else:
+            return None
+    else:
+        url = API_ENDPOINT + f"/users/{user.uid}"
+        params = {
+            'uid': user.uid,
+            'name': user.name,
+            'token': user.token,
+            'balance': user.balance,
+            'payment_type': user.payment_type,
+            'email': user.email,
+            'phone': user.phone
+        }
+        response = requests.put(url, params=params, headers=REQUEST_HEADERS)
+        if response == 200:
+            return user
+        else:
+            print(f"\tReceived response {response.status_code}")
+            print(f"\t{response.content}")
+            return None
