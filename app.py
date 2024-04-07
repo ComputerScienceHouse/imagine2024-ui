@@ -12,6 +12,8 @@ from kivy.core.window import Window
 from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex
 from kivy.properties import DictProperty
+from kivy.core.window import Window
+
 
 class InfoScreen(MDScreen):
     pass
@@ -51,6 +53,7 @@ class MemberCard(MDCard):
 class MainApp(MDApp):
     def build(self):
         Window.size = (1024,600)
+        Window.show_cursor = False
         self.theme_cls.theme_style = "Light"
         self.theme_cls.primary_palette = "Purple"
         self.theme_cls.accent_palette = "Orange"
