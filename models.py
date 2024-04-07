@@ -43,6 +43,7 @@ class Item:
         self.std_weight = std_weight
         self.thumbnail = thumbnail
         self.vision_class = vision_class
+        # TODO implement download of thumbnail
 
     def __eq__(self, other):
         if isinstance(other, Item):
