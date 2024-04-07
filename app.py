@@ -1,3 +1,5 @@
+from kivy.core.image import Image
+from kivy.loader import Loader
 from kivymd.app import MDApp
 from kivymd.uix.label import MDLabel
 from kivymd.uix.boxlayout import BoxLayout
@@ -49,6 +51,9 @@ class MemberCard(MDCard):
 class MainApp(MDApp):
     def build(self):
         Window.size = (1024,600)
+
+        # Set default loading image
+        Loader.loading_image = Image('./images/item_placeholder.png')
         
         self.root = BoxLayout()
 

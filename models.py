@@ -1,3 +1,4 @@
+from kivy.loader import Loader
 
 WEIGHT_UNIT = "g"
 
@@ -32,7 +33,7 @@ class User:
 class Item:
     def __init__(
             self, item_id, name, upc, price, units, avg_weight, std_weight,
-            thumbnail, vision_class
+            thumbnail_url, vision_class
     ):
         self.item_id = item_id
         self.name = name
@@ -41,9 +42,10 @@ class Item:
         self.units = units
         self.avg_weight = avg_weight
         self.std_weight = std_weight
-        self.thumbnail = thumbnail
+        self.thumbnail_url = thumbnail_url
+        # Async download the image and store it
+        self.thumbnail = Loader.image(thumbnail_url)
         self.vision_class = vision_class
-        # TODO implement download of thumbnail
 
     def __eq__(self, other):
         if isinstance(other, Item):
@@ -54,7 +56,7 @@ class Item:
                     and self.units == other.units
                     and self.avg_weight == other.avg_weight
                     and self.std_weight == other.std_weight
-                    and self.thumbnail == other.thumbnail
+                    and self.thumbnail_url == other.thumbnail_url
                     and self.vision_class == other.vision_class)
         else:
             return False
@@ -62,7 +64,7 @@ class Item:
     def __str__(self):
         return (f'Item[{self.item_id},{self.name},UPC:{self.upc},${self.price},'
                 f'{self.units}units,{self.avg_weight}{WEIGHT_UNIT},'
-                f'{self.std_weight}{WEIGHT_UNIT},{self.thumbnail},'
+                f'{self.std_weight}{WEIGHT_UNIT},{self.thumbnail_url},'
                 f'{self.vision_class}]')
 
 
