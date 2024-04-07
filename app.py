@@ -58,7 +58,7 @@ class MainApp(MDApp):
 
         self.root.add_widget(Builder.load_file('app.kv'))
 
-        self.root.children[0].current = 'Start'
+        self.root.children[0].current = 'Info'
 
 
 if __name__ == "__main__":

@@ -101,14 +101,15 @@ ScreenManager:
             rows:1
 
             FloatLayout:
+                MDLabel:
+                    text:"Navigation"
+                    pos_hint: {'x': 0.075, 'y': 0.35}
+
                 BoxLayout:
+                    id: navigation
                     orientation: 'vertical'
                     size_hint: 0.20, 0.20
                     pos_hint: {'x': 0.05, 'y': 0.5}
-                    MDButton:
-                        style: "text"
-                        MDButtonText:
-                            text:"Navigation"
 
                     MDButton:
                         style: "text"
@@ -139,30 +140,123 @@ ScreenManager:
                         MDButtonText:
                             text:'Back to Start'
 
-                BoxLayout:
-                    size_hint: 0.75, 0.75
-                    pos_hint: {'x': 0.5, 'y': 0.5}
-                    orientation: 'vertical'
 
-                    MemberCard:
-                        name: 'Wilson'
-                        job_title: 'Cool Guy'
-                        major: 'CS'
+                ScrollView:
+                    pos: (navigation.width, 0)
+                    size_hint: (None, None)
+                    size: ((root.width-navigation.width), 0.9*root.height)
+                    GridLayout:
+                        id: output
+                        cols: 1
+                        size_hint_y: None
+                        height: self.minimum_height
 
-                    MemberCard:
-                        name: 'Sahil'
-                        job_title: 'Cool Guy'
-                        major: 'CS'
+                        MDCard:
+                            orientation: 'vertical'
+                            size_hint: None, None
+                            size: 0.9*(root.width-navigation.width), '180dp'
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                            elevation: 10
+                            padding: '8dp'
+                            
+                            MDBoxLayout:
+                                size_hint_y: None
+                                height: '100dp'
+                                adaptive_height: True
+                                adaptive_width: True
+                            
+                                MDLabel:
+                                    text: 'About the Project: Bits n’ Bytes'
+                                    theme_text_color: 'Secondary'
+                                    size_hint_y: None
+                                    pos_hint: {'top': 1, 'x': 0}
+                                    height: self.texture_size[1]
+                            
+                            MDLabel:
+                                text: "Lorem ipsum dolor sit amet consectetur. Volutpat et viverra augue quisque ornare a egestas diam eleifend. Amet vel molestie sit orci elementum turpis aliquet. Odio tempus et pellentesque a lacus. Mattis a amet a pretium. Aliquet cras dolor tellus est ac aenean eget amet elementum. Cursus et ut pellentesque nibh. Dignissim sed in vulputate leo aliquet malesuada. Consequat quam mattis ullamcorper tristique quis lobortis dui turpis blandit. Dictum facilisis in felis commodo egestas nulla. Mauris turpis lorem id blandit sagittis eu sed. Ipsum interdum fermentum quis sed eget lectus ultrices donec."
+                                theme_text_color: 'Secondary'
+                                size_hint_y: None
+                                height: self.texture_size[1] 
 
-                    MemberCard:
-                        name: 'Jason'
-                        job_title: 'Cool Guy'
-                        major: 'CS'
+                        MDCard:
+                            orientation: 'vertical'
+                            size_hint: None, None
+                            size: 0.9*(root.width-navigation.width), '180dp'
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                            elevation: 10
+                            padding: '8dp'
+                            
+                            MDBoxLayout:
+                                size_hint_y: None
+                                height: '48dp'
+                                adaptive_height: True
+                                adaptive_width: True
+                                
+                                MDLabel:
+                                    text: 'Card Title'
+                                    theme_text_color: 'Secondary'
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+                            
+                            MDLabel:
+                                text: "Here's some content text for the card. You can put any widget here as content."
+                                theme_text_color: 'Secondary'
+                                size_hint_y: None
+                                height: self.texture_size[1] 
 
-                    MemberCard:
-                        name: 'Isaac'
-                        job_title: 'Cool Guy'
-                        major: 'CS'
+                        MDCard:
+                            orientation: 'vertical'
+                            size_hint: None, None
+                            size: 0.9*(root.width-navigation.width), '180dp'
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                            elevation: 10
+                            padding: '8dp'
+                            
+                            MDBoxLayout:
+                                size_hint_y: None
+                                height: '48dp'
+                                adaptive_height: True
+                                
+                                MDLabel:
+                                    text: 'Card Title'
+                                    theme_text_color: 'Secondary'
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+                            
+                            MDLabel:
+                                text: "Here's some content text for the card. You can put any widget here as content."
+                                theme_text_color: 'Secondary'
+                                size_hint_y: None
+                                height: self.texture_size[1] 
+
+                        
+                        MDCard:
+                            orientation: 'horizontal'
+                            size_hint: None, None
+                            size: 0.9*(root.width-navigation.width), '180dp'
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                            elevation: 10
+                            padding: '8dp'
+
+                            MemberCard:
+                                name: 'Wilson'
+                                job_title: 'Cool Guy'
+                                major: 'CS'
+
+                            MemberCard:     
+                                name: 'Sahil'
+                                job_title: 'Cool Guy'
+                                major: 'CS'
+
+                            MemberCard:
+                                name: 'Jason'
+                                job_title: 'Cool Guy'
+                                major: 'CS'
+
+                            MemberCard:
+                                name: 'Isaac'
+                                job_title: 'Cool Guy'
+                                major: 'CS'
 
     AttractScreen:
         name: 'Attract'
