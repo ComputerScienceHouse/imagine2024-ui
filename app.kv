@@ -13,13 +13,12 @@ ScreenManager:
     id: sm
 
     StartScreen:
-        md_bg_color: self.theme_cls.backgroundColor
+        md_bg_color: app.theme_cls.backgroundColor
         name: 'Start'
 
         RelativeLayout:
-
             # Still working on this, lets leave it out for now
-            #ImageButton:
+            # ImageButton:
             #    source: 'images/tapIcon.png'
             #    text: 'Tap card to start'
 
@@ -49,7 +48,7 @@ ScreenManager:
                     text:'Go to Cart'
 
     CartScreen:
-        md_bg_color: self.theme_cls.backgroundColor
+        md_bg_color: app.theme_cls.backgroundColor
         name: 'Cart'
 
         # This should be a scrollview pls make this a scrollview
@@ -93,40 +92,77 @@ ScreenManager:
                 text:'Go to Start'
 
     InfoScreen:
-        md_bg_color: self.theme_cls.backgroundColor
+        md_bg_color: app.theme_cls.backgroundColor
         name: 'Info'
 
-        MDButton:
-            style: 'filled'
-            on_press:
-                root.transition.direction = 'down'
-                root.current = 'Start'
-            
-            MDButtonText:
-                text:'Back to Start'
 
         GridLayout:
             cols:2
+            rows:1
 
-            MemberCard:
-                name: 'Wilson'
-                job_title: 'Cool Guy'
-                major: 'CS'
+            FloatLayout:
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint: 0.20, 0.20
+                    pos_hint: {'x': 0.05, 'y': 0.5}
+                    MDButton:
+                        style: "text"
+                        MDButtonText:
+                            text:"Navigation"
 
-            MemberCard:
-                name: 'Sahil'
-                job_title: 'Cool Guy'
-                major: 'CS'
+                    MDButton:
+                        style: "text"
+                        MDButtonText:
+                            text:"About the Project"
 
-            MemberCard:
-                name: 'Jason'
-                job_title: 'Cool Guy'
-                major: 'CS'
+                    MDButton:
+                        style: "text"
+                        MDButtonText:
+                            text:"FAQ"
 
-            MemberCard:
-                name: 'Isaac'
-                job_title: 'Cool Guy'
-                major: 'CS'
+                    MDButton:
+                        style: "text"
+                        MDButtonText:
+                            text:"About CSH"
+
+                    MDButton:
+                        style: "text"
+                        MDButtonText:
+                            text:"Team Credits"
+                
+                    MDButton:
+                        style: 'filled'
+                        on_press:
+                            root.transition.direction = 'down'
+                            root.current = 'Start'
+                        
+                        MDButtonText:
+                            text:'Back to Start'
+
+                BoxLayout:
+                    size_hint: 0.75, 0.75
+                    pos_hint: {'x': 0.5, 'y': 0.5}
+                    orientation: 'vertical'
+
+                    MemberCard:
+                        name: 'Wilson'
+                        job_title: 'Cool Guy'
+                        major: 'CS'
+
+                    MemberCard:
+                        name: 'Sahil'
+                        job_title: 'Cool Guy'
+                        major: 'CS'
+
+                    MemberCard:
+                        name: 'Jason'
+                        job_title: 'Cool Guy'
+                        major: 'CS'
+
+                    MemberCard:
+                        name: 'Isaac'
+                        job_title: 'Cool Guy'
+                        major: 'CS'
 
     AttractScreen:
         name: 'Attract'
@@ -146,10 +182,10 @@ ScreenManager:
         #   It doesn't need to be a button so this should be fine right
         canvas:
             Color:
-                rgb: 0.42, 0.0, 0.39
+                rgba: self.theme_cls.backgroundColor
             RoundedRectangle:
-                size: self.size
-                pos: self.pos
+                size: app.size
+                pos: app.pos
                 radius: [(20, 20), (20, 20), (20, 20), (20, 20)]
 
         Image:

@@ -4,29 +4,31 @@ from kivymd.uix.boxlayout import BoxLayout
 from kivymd.uix.card import MDCard
 from kivymd.uix.screenmanager import ScreenManager
 from kivymd.uix.screen import MDScreen
-from kivymd.uix.list.list import MDListItem
-
+from kivymd.uix.list import MDListItem
 from kivy.properties import StringProperty
 from kivy.lang import Builder
 from kivy.config import Config
 from kivy.core.window import Window
 from kivy.uix.widget import Widget
-
+from kivy.utils import get_color_from_hex
+from kivy.properties import DictProperty
 
 class InfoScreen(MDScreen):
     pass
 
+class InfoCard(MDCard):
+    source = StringProperty()
+    title = StringProperty()
+    content = StringProperty()
 
 class CartScreen(MDScreen):
     pass
-
 
 class StartScreen(MDScreen):
     pass
 
 class AttractScreen(MDScreen):
     pass
-
 
 class CartItem(MDListItem):
     title = StringProperty()
@@ -49,7 +51,9 @@ class MemberCard(MDCard):
 class MainApp(MDApp):
     def build(self):
         Window.size = (1024,600)
-        
+        self.theme_cls.theme_style = "Light"
+        self.theme_cls.primary_palette = "Purple"
+        self.theme_cls.accent_palette = "Orange"
         self.root = BoxLayout()
 
         self.root.add_widget(Builder.load_file('app.kv'))
