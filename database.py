@@ -171,8 +171,8 @@ def get_user(user_id=None, user_token=None) -> User | None:
         url = ""
         if user_token is not None:
             # Query based on token
-            print(f"GET /users/{user_token}")
-            url = API_ENDPOINT + f"/users/token?t={user_token}"
+            print(f"GET /token/{user_token}")
+            url = API_ENDPOINT + f"/token/{user_token}"
         elif user_id is not None:
             # Query based on user id
             print(f"GET /users/{user_id}")
