@@ -35,9 +35,9 @@ class RFIDReader:
         self.last_card_value = None
         self._done_reading_flag = False
         if USE_RFID:
-            reader = SimpleMFRC522()
+            self.reader = SimpleMFRC522()
         else:
-            reader = None
+            self.reader = None
 
     def _read_card(self):
         """
@@ -45,7 +45,7 @@ class RFIDReader:
         target function of the thread.
         :return:
         """
-        self.last_card_value = reader.read_id()
+        self.last_card_value = self.reader.read_id()
         self._done_reading_flag = True
 
     def start_read(self) -> None:
@@ -56,7 +56,7 @@ class RFIDReader:
         """
         if USE_RFID:
             # Spawn a read thread
-            self.read_thread = threading.Thread(target=self._read_card())
+            self.read_thread = threading.Thread(target=self._read_card)
             self.read_thread.start()
 
     def waiting_for_card(self) -> bool:
