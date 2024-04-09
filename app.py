@@ -61,13 +61,7 @@ class MainApp(MDApp):
         self.root.add_widget(Builder.load_file('app.kv'))
 
         self.root.children[0].current = 'Start'
-
-        reader = utils.rfid_reader.RFIDReader()
-        reader.start_read()
-
-        while reader.waiting_for_card():
-            print("Waiting")
-        print(reader.get_last_read_value())
+        self.root.children[0].current = 'Start'
 
 
 if __name__ == "__main__":
