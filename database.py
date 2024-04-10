@@ -42,8 +42,6 @@ MOCK_USERS = {
     10: User(10, "Daniel Anderson", "", 14.30, "credit", "daniel.anderson@example.com", "+15551239876"),
 }
 
-os.environ["USE_MOCK_DATA"] = "true"
-
 # Use mock data if USE_MOCK_DATA environment variable is set to 'true'. If it
 # isn't set to 'true' (including not being set at all), it this defaults to
 # False.
