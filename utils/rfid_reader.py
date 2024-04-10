@@ -45,7 +45,7 @@ class RFIDReader:
         target function of the thread.
         :return:
         """
-        self.last_card_value = self.reader.read_id()
+        self.last_card_value, _ = self.reader.read()
         self._done_reading_flag = True
 
     def start_read(self) -> None:
