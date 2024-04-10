@@ -84,3 +84,6 @@ class RFIDReader:
         :return:
         """
         return self.last_card_value
+
+    def cleanup(self):
+        GPIO.cleanup()

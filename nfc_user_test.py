@@ -21,6 +21,8 @@ def main():
 
     token = reader.get_last_read_value()
 
+    reader.cleanup()
+
     user = database.get_user(user_token=token)
 
     if user is None:
