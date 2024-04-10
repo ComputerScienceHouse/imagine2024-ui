@@ -17,13 +17,16 @@ def main():
     reader.start_read()
 
     while reader.waiting_for_card():
-        print("Waiting for card")
+        pass
 
     token = reader.get_last_read_value()
 
     user = database.get_user(user_token=token)
 
-    print("Token belongs to user %s" % user.name)
+    if user is None:
+        print("No user found")
+    else:
+        print("Token belongs to user %s" % user.name)
 
 
 if __name__ == '__main__':
