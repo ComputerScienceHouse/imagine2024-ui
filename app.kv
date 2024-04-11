@@ -19,9 +19,11 @@ ScreenManager:
         RelativeLayout:
 
             # Still working on this, lets leave it out for now
-            #ImageButton:
-            #    source: 'images/tapIcon.png'
-            #    text: 'Tap card to start'
+            ImageButton:
+                source: 'images/tapIcon.png'
+                text: 'Tap card to start'
+                x: 110
+
 
             # How can we make this bigger?
             MDIconButton:
@@ -139,22 +141,22 @@ ScreenManager:
 ###########################
 
 <ImageButton>
-    RelativeLayout:
-        size: (626, 110)
-        
-        # I think this is the only way to get a rounded rectangle on the screen.
-        #   It doesn't need to be a button so this should be fine right
-        canvas:
-            Color:
-                rgb: 0.42, 0.0, 0.39
-            RoundedRectangle:
-                size: self.size
-                pos: self.pos
-                radius: [(20, 20), (20, 20), (20, 20), (20, 20)]
+    size_hint: (0.611, 0.107)
 
-        Image:
-            pos_hint: {'center_x': 0.2, 'center_y': 0.5}
-            source: root.source
+    # I think this is the only way to get a rounded rectangle on the screen.
+    #   It doesn't need to be a button so this should be fine right
+    canvas:
+        Color:
+            rgb: 0.42, 0.0, 0.39
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [(20, 20), (20, 20), (20, 20), (20, 20)]
+
+    Image:
+        x: self.parent.x + 140
+        y: self.parent.y + 8
+        source: root.source
 
         MDLabel:
             text: root.text
