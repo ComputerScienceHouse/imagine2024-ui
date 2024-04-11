@@ -152,18 +152,20 @@ ScreenManager:
             radius: [(20, 20), (20, 20), (20, 20), (20, 20)]
 
     Image:
-        x: self.parent.x + 140
+        x: self.parent.x + 300
         y: self.parent.y + 8
         source: root.source
 
-        Label:
-            size: 400, 100
-            text: root.text
-            text_size: self.size
-            x: self.parent.x + 420
-            y: self.parent.y + 5
-            font_size: '26.365sp'
-            font_name: 'Roboto'
+    Label:
+        size: 400, 100
+        text: root.text
+        text_size: self.size
+        x: self.parent.x + 420
+        y: self.parent.y + 5
+        font_size: '26.365sp'
+        font_name: 'Roboto'
+        x: self.parent.x + (self.parent.width / 2) - (self.width / 2)
+        y: self.parent.y + (self.parent.height / 2) - (self.height / 3)
 
 <CartItem>
     size: "144dp", "170dp"
