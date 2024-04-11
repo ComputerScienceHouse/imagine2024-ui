@@ -185,7 +185,7 @@ def get_user(user_id=None, user_token=None) -> User | None:
         if response.status_code == 200:
             user = response.json()
             return User(
-                user['uid'],
+                user['id'],
                 user['name'],
                 user['token'],
                 user['balance'],
