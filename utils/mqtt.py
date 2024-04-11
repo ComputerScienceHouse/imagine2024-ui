@@ -59,5 +59,8 @@ class MQTT:
         """
         self._rfid_user_callback = callback
 
-    def loop_forever(self):
-        self.client.loop_forever()
+    def start_listening(self):
+        self.client.loop_start()
+
+    def stop_listening(self):
+        self.client.loop_stop()
