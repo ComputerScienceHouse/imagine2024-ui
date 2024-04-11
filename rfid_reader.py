@@ -40,6 +40,8 @@ def main():
                 if database.is_reachable():
                     user = database.get_user(user_token=tag_uid)
                     mqtt_client.publish("rfid/user", str(user))
+                else:
+                    exit(1)
 
         except KeyboardInterrupt:
             print("Control+C pressed, exiting program")
