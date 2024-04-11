@@ -14,6 +14,7 @@ import database
 USE_RFID = False
 MQTT_BROKER_ADDRESS = "localhost"
 MQTT_BROKER_PORT = 1883
+CLIENT_ID = "rfid-reader"
 
 
 # Check if the NFC reader can be used at all
@@ -25,7 +26,7 @@ if platform.system() == "Linux" and "rpi" in platform.uname().release:
 
 def main():
 
-    mqtt_client = mqtt.Client()
+    mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
     mqtt_client.connect(MQTT_BROKER_ADDRESS, port=MQTT_BROKER_PORT)
 
     # Check if RFID can be used

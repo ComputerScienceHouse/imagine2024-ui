@@ -1,19 +1,15 @@
 from kivy.core.image import Image
 from kivy.loader import Loader
 from kivymd.app import MDApp
-from kivymd.uix.label import MDLabel
 from kivymd.uix.boxlayout import BoxLayout
 from kivymd.uix.card import MDCard
-from kivymd.uix.screenmanager import ScreenManager
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.list.list import MDListItem
 
 from kivy.properties import StringProperty
 from kivy.lang import Builder
-from kivy.config import Config
 from kivy.core.window import Window
 from kivy.uix.widget import Widget
-import utils.rfid_reader
 
 
 class InfoScreen(MDScreen):
