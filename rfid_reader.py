@@ -14,7 +14,6 @@ import database
 USE_RFID = False
 MQTT_BROKER_ADDRESS = "localhost"
 MQTT_BROKER_PORT = 1883
-CLIENT_ID = "rfid-reader"
 
 
 # Check if the NFC reader can be used at all
@@ -37,7 +36,7 @@ def main():
             while True:
                 tag_uid, _ = reader.read()
                 user = database.get_user(user_token=tag_uid)
-                mqtt_client.publish("rfid/user", user)
+                mqtt_client.publish("rfid/user", str(user))
 
         except KeyboardInterrupt:
             print("Control+C pressed, exiting program")

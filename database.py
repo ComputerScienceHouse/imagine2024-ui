@@ -216,7 +216,7 @@ def update_user(user: User) -> User | None:
     else:
         url = API_ENDPOINT + f"/users/{user.uid}"
         params = {
-            'uid': user.uid,
+            'id': user.uid,
             'name': user.name,
             'token': user.token,
             'balance': user.balance,

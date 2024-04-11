@@ -26,7 +26,7 @@ class MQTT:
 
     def __init__(self):
         # Create client
-        self.client = mqtt.Client()
+        self.client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
         self.client.connect(MQTT_BROKER_ADDRESS, port=MQTT_BROKER_PORT)
 
         # Add callback functions
