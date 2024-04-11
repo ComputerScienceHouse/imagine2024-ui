@@ -35,8 +35,9 @@ def main():
         try:
             while True:
                 tag_uid, _ = reader.read()
-                user = database.get_user(user_token=tag_uid)
-                mqtt_client.publish("rfid/user", str(user))
+                if database.is_reachable():
+                    user = database.get_user(user_token=tag_uid)
+                    mqtt_client.publish("rfid/user", str(user))
 
         except KeyboardInterrupt:
             print("Control+C pressed, exiting program")
