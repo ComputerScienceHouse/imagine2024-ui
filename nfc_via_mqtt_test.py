@@ -1,3 +1,13 @@
+###############################################################################
+#
+# File: nfc_via_mqtt_test.py
+#
+# Author: Isaac Ingram
+#
+# Purpose: Print RFID related data coming from the MQTT broker
+#
+###############################################################################
+
 from utils.mqtt import MQTT as mqtt
 
 

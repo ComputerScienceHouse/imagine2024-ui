@@ -4,7 +4,8 @@
 #
 # Author: Isaac Ingram
 #
-# Purpose: Offer a way to interface with the RFID reader
+# Purpose: Run the NFC reader. This should be run as a standalone script as it
+# runs in its own loop and publishes user data to MQTT
 #
 ###############################################################################
 import platform
@@ -35,6 +36,7 @@ def main():
         try:
             while True:
                 tag_uid, _ = reader.read()
+                # TODO figure out how to make it not crash if the database is not reachable
                 if database.is_reachable():
                     user = database.get_user(user_token=tag_uid)
                     mqtt_client.publish("rfid/user", str(user))
