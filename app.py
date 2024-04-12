@@ -9,6 +9,8 @@ from kivymd.uix.boxlayout import BoxLayout
 from kivymd.uix.card import MDCard
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.list.list import MDListItem
+
+import models
 from utils.mqtt import MQTT
 from kivy.properties import StringProperty
 from kivy.lang import Builder
@@ -51,6 +53,8 @@ class MemberCard(MDCard):
 
 class MainApp(MDApp):
 
+    current_user: models.User = None
+
     def build(self):
         Window.size = (1024,600)
 
@@ -70,8 +74,10 @@ class MainApp(MDApp):
 
     @mainthread
     def user_tap_callback(self, user):
-        self.root.children[0].transition.direction = 'right'
-        self.root.children[0].current = 'Cart'
+        if self.current_user is None:
+            self.current_user = user
+            self.root.children[0].transition.direction = 'left'
+            self.root.children[0].current = 'Cart'
 
     def stop(self, *largs):
         self.mqtt_client.stop_listening()
