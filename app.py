@@ -68,6 +68,7 @@ class MainApp(MDApp):
         self.mqtt_client.set_rfid_user_callback(self.user_tap_callback)
 
     def user_tap_callback(self, user):
+        self.root.children[0].transition.direction = 'right'
         self.root.children[0].current = 'Cart'
 
     def stop(self, *largs):
