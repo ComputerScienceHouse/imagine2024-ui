@@ -51,37 +51,19 @@ ScreenManager:
                     text:'Go to Cart'
 
     CartScreen:
-        md_bg_color: self.theme_cls.backgroundColor
         name: 'Cart'
 
-        # This should be a scrollview pls make this a scrollview
-        BoxLayout:
-            orientation: 'vertical'
-            width: 2*root.width/3
-
-            CartItem:
-                title: 'Jolt Soda'
-                source: 'images/oof.png'
-                price: '3.00'
-                quantity: '3'
-
-            CartItem:
-                title: 'Jolt Soda'
-                source: 'images/oof.png'
-                price: '3.00'
-                quantity: '3'
-
-            CartItem:
-                title: 'Jolt Soda'
-                source: 'images/oof.png'
-                price: '3.00'
-                quantity: '3'
-
-            CartItem:
-                title: 'Jolt Soda'
-                source: 'images/oof.png'
-                price: '3.00'
-                quantity: '3'
+        ScrollView:
+            RecycleView:
+                id: cart_view
+                viewclass: 'CartItem'
+                RecycleBoxLayout:
+                    default_size: None, dp(150)
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: 'vertical'
+                    spacing: dp(10)
 
         ### Do not leave this in
         MDButton:
