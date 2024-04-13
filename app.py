@@ -14,6 +14,9 @@ from kivy.lang import Builder
 from kivy.config import Config
 from kivy.core.window import Window
 from kivy.uix.widget import Widget
+
+import database
+import models
 import utils.rfid_reader
 
 
@@ -21,8 +24,19 @@ class InfoScreen(MDScreen):
     pass
 
 
+
 class CartScreen(Screen):
     cart_items = ListProperty([])
+
+    def add_item(self, item: models.Item, quantity: int):
+        """
+        Add an item to the
+        :param item:
+        :param quantity:
+        :return:
+        """
+        item_to_add = {'title': str(item.name), 'source': str(item.thumbnail_url), 'price': str(item.price), 'quantity': str(quantity)}
+        self.cart_items.insert(0, item_to_add)
 
     def refresh_cart(self):
         cart_view = self.children[1].children[0]
@@ -68,18 +82,10 @@ class MainApp(MDApp):
         self.root.add_widget(Builder.load_file('app.kv'))
 
         cart_screen = self.root.children[0].get_screen('Cart')
-        cart_screen.cart_items = [
-            {'title': 'Jolt Soda', 'source': 'images/oof.png', 'price': '3.00', 'quantity': '3'},
-            {'title': 'Coffee', 'source': 'images/oof.png', 'price': '2.50', 'quantity': '2'},
-            {'title': 'Tea', 'source': 'images/oof.png', 'price': '1.75', 'quantity': '5'},
-            {'title': 'Orange Juice', 'source': 'images/oof.png', 'price': '4.50', 'quantity': '7'},
-            {'title': 'Water', 'source': 'images/oof.png', 'price': '1.00', 'quantity': '4'},
-            {'title': 'Smoothie', 'source': 'images/oof.png', 'price': '5.25', 'quantity': '6'},
-            {'title': 'Milkshake', 'source': 'images/oof.png', 'price': '3.75', 'quantity': '9'},
-            {'title': 'Lemonade', 'source': 'images/oof.png', 'price': '2.25', 'quantity': '8'},
-            {'title': 'Iced Tea', 'source': 'images/oof.png', 'price': '2.00', 'quantity': '1'}
-        ]
-        cart_screen.refresh_cart()
+        cart_data = database.get_items()
+        for data in cart_data:
+            cart_screen.add_item(data, 2)
+            cart_screen.refresh_cart()
 
 
 if __name__ == "__main__":
