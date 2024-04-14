@@ -1,3 +1,4 @@
+import platform
 from kivy.core.image import Image
 from kivy.loader import Loader
 from kivymd.app import MDApp
@@ -15,6 +16,11 @@ from kivy.core.window import Window
 from kivy.uix.widget import Widget
 import utils.rfid_reader
 
+RUNNING_ON_TARGET = False # Store if this is running on raspberry pi
+
+# Check if this is running on Raspberry Pi
+if platform.system() == "Linux" and "rpi" in platform.uname().release:
+    RUNNING_ON_TARGET = True
 
 class InfoScreen(MDScreen):
     pass
@@ -52,6 +58,8 @@ class MemberCard(MDCard):
 class MainApp(MDApp):
     def build(self):
         Window.size = (1024,600)
+        if RUNNING_ON_TARGET:
+            Window.show_cursor = False
 
         # Set default loading image
         Loader.loading_image = Image('./images/item_placeholder.png')
