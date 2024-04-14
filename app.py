@@ -1,3 +1,6 @@
+import platform
+from kivy.core.image import Image
+from kivy.loader import Loader
 from kivymd.app import MDApp
 from kivymd.uix.label import MDLabel
 from kivymd.uix.boxlayout import BoxLayout
@@ -13,7 +16,13 @@ from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex
 from kivy.properties import DictProperty
 from kivy.core.window import Window
+import utils.rfid_reader
 
+RUNNING_ON_TARGET = False # Store if this is running on raspberry pi
+
+# Check if this is running on Raspberry Pi
+if platform.system() == "Linux" and "rpi" in platform.uname().release:
+    RUNNING_ON_TARGET = True
 
 class InfoScreen(MDScreen):
     pass
@@ -53,10 +62,16 @@ class MemberCard(MDCard):
 class MainApp(MDApp):
     def build(self):
         Window.size = (1024,600)
-        Window.show_cursor = False
+
+        if RUNNING_ON_TARGET:
+            Window.show_cursor = False
         self.theme_cls.theme_style = "Light"
         self.theme_cls.primary_palette = "Purple"
         self.theme_cls.accent_palette = "Orange"
+
+        # Set default loading image
+        Loader.loading_image = Image('./images/item_placeholder.png')
+        
         self.root = BoxLayout()
 
         self.root.add_widget(Builder.load_file('app.kv'))

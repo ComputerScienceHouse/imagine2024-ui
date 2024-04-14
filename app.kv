@@ -18,9 +18,11 @@ ScreenManager:
 
         RelativeLayout:
             # Still working on this, lets leave it out for now
-            # ImageButton:
-            #    source: 'images/tapIcon.png'
-            #    text: 'Tap card to start'
+
+            ImageButton:
+                source: 'images/tapIcon.png'
+                text: 'Tap card to start'
+                x: 400
 
             # How can we make this bigger?
             MDIconButton:
@@ -268,26 +270,31 @@ ScreenManager:
 #
 ###########################
 
-<ImageButton>
-    RelativeLayout:
-        size: (626, 110)
-        
-        # I think this is the only way to get a rounded rectangle on the screen.
-        #   It doesn't need to be a button so this should be fine right
-        canvas:
-            Color:
-                rgba: self.theme_cls.backgroundColor
-            RoundedRectangle:
-                size: app.size
-                pos: app.pos
-                radius: [(20, 20), (20, 20), (20, 20), (20, 20)]
+<ImageButton>:
+    size_hint: (0.611, 0.107)
+    canvas:
+        Color:
+            rgb: 0.42, 0.0, 0.39
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [(20, 20), (20, 20), (20, 20), (20, 20)]
 
-        Image:
-            pos_hint: {'center_x': 0.2, 'center_y': 0.5}
-            source: root.source
+    Image:
+        x: self.parent.x + 300
+        y: self.parent.y + 8
+        source: root.source
 
-        MDLabel:
-            text: root.text
+    Label:
+        size: 400, 100
+        text: root.text
+        text_size: self.size
+        x: self.parent.x + 420
+        y: self.parent.y + 5
+        font_size: '26.365sp'
+        font_name: 'Roboto'
+        x: self.parent.x + (self.parent.width / 2) - (self.width / 2)
+        y: self.parent.y + (self.parent.height / 2) - (self.height / 3)
 
 <CartItem>
     size: "144dp", "170dp"
