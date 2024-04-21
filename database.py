@@ -87,10 +87,10 @@ def get_items() -> List[Item]:
                     item_raw['name'],
                     item_raw['upc'],
                     item_raw['price'],
-                    item_raw['units'],
-                    item_raw['avg_weight'],
-                    item_raw['std_weight'],
-                    item_raw['thumbnail'],
+                    item_raw['quantity'],
+                    item_raw['weight_avg'],
+                    item_raw['weight_std'],
+                    item_raw['thumb_img'],
                     item_raw['vision_class']
                 ))
             return result
