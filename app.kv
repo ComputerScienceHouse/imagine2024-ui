@@ -53,17 +53,57 @@ ScreenManager:
     CartScreen:
         name: 'Cart'
 
-        ScrollView:
-            RecycleView:
-                id: cart_view
-                viewclass: 'CartItem'
-                RecycleBoxLayout:
-                    default_size: None, dp(150)
-                    default_size_hint: 1, None
-                    size_hint_y: None
-                    height: self.minimum_height
+        BoxLayout:
+            orientation: 'horizontal'
+
+            ScrollView:
+                RecycleView:
+                    id: cart_view
+                    viewclass: 'CartItem'
+                    RecycleBoxLayout:
+                        default_size: None, dp(150)
+                        default_size_hint: 1, None
+                        size_hint_y: None
+                        height: self.minimum_height
+                        orientation: 'vertical'
+                        spacing: dp(10)
+
+            BoxLayout:
+                size_hint: (0.5, 1)
+
+                orientation: 'vertical'
+
+                Button:
+                    text: 'Cancel Transaction'
+                    background_normal: ''
+                    background_down: 'images/oof.png'
+                    background_color: 0.9686, 0.4118, 0.0078, 1
+
+                BoxLayout:
+                    size_hint: (1, 5)
                     orientation: 'vertical'
-                    spacing: dp(10)
+
+                    Label:
+                        text: 'Current User Information'
+
+                    Label:
+                        name: 'name_field'
+                        text: 'Name:'
+
+                    Label:
+                        name: 'card_field'
+                        text: 'Card:'
+
+                    Label:
+                        name: 'email_field'
+                        text: 'Email:'
+
+                    Label:
+                        name: 'phone_field'
+                        text: 'Phone:'
+
+                    Label:
+                        text: 'Finished? Close the door'
 
         ### Do not leave this in
         MDButton:

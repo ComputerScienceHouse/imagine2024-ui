@@ -45,7 +45,7 @@ class CartScreen(Screen):
         self.cart_items.insert(0, item_to_add)
 
     def refresh_cart(self):
-        cart_view = self.children[1].children[0]
+        cart_view = self.children[1].children[1].children[0]
         cart_view.data = [{'title': item['title'], 'source': item['source'], 'price': item['price'], 'quantity': item['quantity']} for item in self.cart_items]
         cart_view.refresh_from_data()
 
