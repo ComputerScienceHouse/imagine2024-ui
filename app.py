@@ -84,7 +84,7 @@ class MainApp(MDApp):
     current_user: models.User = None
 
     def __init__(self, **kwargs):
-        super().__init__(kwargs)
+        super().__init__()
         self.mqtt_client = None
 
     def build(self):
