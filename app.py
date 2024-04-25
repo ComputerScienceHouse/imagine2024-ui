@@ -78,7 +78,7 @@ class MemberCard(MDCard):
 
 class MainApp(MDApp):
     def build(self):
-        Window.size = (1024,600)
+        Window.size = (800,400)
         if RUNNING_ON_TARGET:
             Window.show_cursor = False
 
