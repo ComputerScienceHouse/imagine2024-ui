@@ -80,16 +80,17 @@ API_ENDPOINT = os.getenv("BNB_API_ENDPOINT", '')
 AUTHORIZATION_KEY = os.getenv("BNB_AUTHORIZATION_KEY", '')
 
 MOCK_ITEMS = {
-    1: Item(1, "Mock Item 1", "123456789012", 9.99, 100, 0.5, 0.1, "item1.jpg", "rectangle"),
-    2: Item(2, "Mock Item 2", "234567890123", 19.99, 50, 1.0, 0.2, "item2.jpg", "cylinder"),
-    3: Item(3, "Mock Item 3", "345678901234", 29.99, 75, 0.8, 0.15, "item3.jpg", "bottle"),
-    4: Item(4, "Mock Item 4", "456789012345", 14.99, 120, 0.6, 0.12, "item4.jpg", "pouch"),
-    5: Item(5, "Mock Item 5", "567890123456", 24.99, 90, 1.2, 0.25, "item5.jpg", "cylinder"),
-    6: Item(6, "Mock Item 6", "678901234567", 34.99, 60, 0.9, 0.18, "item6.jpg", "rectangle"),
-    7: Item(7, "Mock Item 7", "789012345678", 19.99, 100, 0.7, 0.14, "item7.jpg", "pouch"),
-    8: Item(8, "Mock Item 8", "890123456789", 39.99, 40, 1.5, 0.3, "item8.jpg", "rectangle"),
-    9: Item(9, "Mock Item 9", "901234567890", 49.99, 30, 1.1, 0.22, "item9.jpg", "cylinder"),
-    10: Item(10, "Mock Item 10", "012345678901", 29.99, 80, 0.9, 0.18, "item10.jpg", "bottle"),
+
+    1: Item(1, "Mock Item 1", "123456789012", 9.99, 100, 0.5, 0.1, "images/oof.png", "rectangle"),
+    2: Item(2, "Mock Item 2", "234567890123", 19.99, 50, 1.0, 0.2, "images/oof.png", "cylinder"),
+    3: Item(3, "Mock Item 3", "345678901234", 29.99, 75, 0.8, 0.15, "images/oof.png", "bottle"),
+    4: Item(4, "Mock Item 4", "456789012345", 14.99, 120, 0.6, 0.12, "images/oof.png", "pouch"),
+    5: Item(5, "Mock Item 5", "567890123456", 24.99, 90, 1.2, 0.25, "images/oof.png", "cylinder"),
+    6: Item(6, "Mock Item 6", "678901234567", 34.99, 60, 0.9, 0.18, "images/oof.png", "rectangle"),
+    7: Item(7, "Mock Item 7", "789012345678", 19.99, 100, 0.7, 0.14, "images/oof.png", "pouch"),
+    8: Item(8, "Mock Item 8", "890123456789", 39.99, 40, 1.5, 0.3, "images/oof.png", "rectangle"),
+    9: Item(9, "Mock Item 9", "901234567890", 49.99, 30, 1.1, 0.22, "images/oof.png", "cylinder"),
+    10: Item(10, "Mock Item 10", "012345678901", 29.99, 80, 0.9, 0.18, "images/oof.png", "bottle"),
 }
 
 MOCK_USERS = {
@@ -149,10 +150,10 @@ def get_items() -> List[Item]:
                     item_raw['name'],
                     item_raw['upc'],
                     item_raw['price'],
-                    item_raw['units'],
-                    item_raw['avg_weight'],
-                    item_raw['std_weight'],
-                    item_raw['thumbnail'],
+                    item_raw['quantity'],
+                    item_raw['weight_avg'],
+                    item_raw['weight_std'],
+                    item_raw['thumb_img'],
                     item_raw['vision_class']
                 ))
             return result
@@ -248,7 +249,7 @@ def get_user(user_id=None, user_token=None) -> User | None:
         if response.status_code == 200:
             user = response.json()
             return User(
-                user['uid'],
+                user['id'],
                 user['name'],
                 user['token'],
                 user['balance'],
@@ -279,7 +280,7 @@ def update_user(user: User) -> User | None:
     else:
         url = API_ENDPOINT + f"/users/{user.uid}"
         params = {
-            'uid': user.uid,
+            'id': user.uid,
             'name': user.name,
             'token': user.token,
             'balance': user.balance,
