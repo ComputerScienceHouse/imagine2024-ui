@@ -22,8 +22,7 @@ ScreenManager:
             ImageButton:
                 source: 'images/tapIcon.png'
                 text: 'Tap card to start'
-                x: 400
-
+                pos_hint: {'center_x': 0.5, 'center_y': 0.15}
 
             # How can we make this bigger?
             MDIconButton:
@@ -36,6 +35,8 @@ ScreenManager:
 
             Image:
                 source: 'images/logo.png'
+                size_hint: .45, .45
+                pos_hint: {'center_x': 0.5, 'center_y': 0.6}
 
             ### Remove this once NFC works :tm:
             MDButton:
@@ -163,7 +164,7 @@ ScreenManager:
 ###########################
 
 <ImageButton>:
-    size_hint: (0.611, 0.107)
+    size_hint: (0.611, 0.207)
 
     canvas:
         Color:
@@ -173,21 +174,20 @@ ScreenManager:
             pos: self.pos
             radius: [(20, 20), (20, 20), (20, 20), (20, 20)]
 
-    Image:
-        x: self.parent.x + 300
-        y: self.parent.y + 8
-        source: root.source
+    RelativeLayout:
 
-    Label:
-        size: 400, 100
-        text: root.text
-        text_size: self.size
-        x: self.parent.x + 420
-        y: self.parent.y + 5
-        font_size: '26.365sp'
-        font_name: 'Roboto'
-        x: self.parent.x + (self.parent.width / 2) - (self.width / 2)
-        y: self.parent.y + (self.parent.height / 2) - (self.height / 3)
+        Image:
+            size_hint: .15, .15
+            pos_hint: {'center_x': 0.2, 'center_y': 0.2}
+            source: root.source
+
+        Label:
+            text: root.text
+            text_size: root.size
+            font_size: '26.365sp'
+            font_name: 'Roboto'
+            #x: self.parent.x + (self.parent.width / 2) - (self.width / 2)
+            #y: self.parent.y + (self.parent.height / 2) - (self.height / 3)
 
 <CartItem>
     size: "144dp", "170dp"
