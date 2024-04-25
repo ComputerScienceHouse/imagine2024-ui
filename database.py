@@ -186,7 +186,7 @@ def get_user(user_id=None, user_token=None) -> User | None:
         if response.status_code == 200:
             user = response.json()
             return User(
-                user['uid'],
+                user['id'],
                 user['name'],
                 user['token'],
                 user['balance'],
@@ -217,7 +217,7 @@ def update_user(user: User) -> User | None:
     else:
         url = API_ENDPOINT + f"/users/{user.uid}"
         params = {
-            'uid': user.uid,
+            'id': user.uid,
             'name': user.name,
             'token': user.token,
             'balance': user.balance,

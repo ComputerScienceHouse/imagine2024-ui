@@ -1,24 +1,27 @@
 import platform
+import threading
+from typing import List
+
+from kivy.clock import mainthread
 from kivy.core.image import Image
 from kivy.loader import Loader
 from kivy.uix.screenmanager import Screen
 from kivymd.app import MDApp
-from kivymd.uix.label import MDLabel
 from kivymd.uix.boxlayout import BoxLayout
 from kivymd.uix.card import MDCard
-from kivymd.uix.screenmanager import ScreenManager
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.list.list import MDListItem
 
 from kivy.properties import StringProperty, ListProperty
+import models
+from utils.mqtt import MQTT
+from kivy.properties import StringProperty
 from kivy.lang import Builder
-from kivy.config import Config
 from kivy.core.window import Window
 from kivy.uix.widget import Widget
-
 import database
 import models
-import utils.rfid_reader
+import rfid_reader
 
 RUNNING_ON_TARGET = False # Store if this is running on raspberry pi
 
@@ -77,6 +80,13 @@ class MemberCard(MDCard):
 
 
 class MainApp(MDApp):
+
+    current_user: models.User = None
+
+    def __init__(self, **kwargs):
+        super().__init__(kwargs)
+        self.mqtt_client = None
+
     def build(self):
         Window.size = (800,400)
         if RUNNING_ON_TARGET:
@@ -89,11 +99,22 @@ class MainApp(MDApp):
 
         self.root.add_widget(Builder.load_file('app.kv'))
 
-        cart_screen = self.root.children[0].get_screen('Cart')
-        cart_data = database.get_items()
-        for data in cart_data:
-            cart_screen.add_item(data, 2)
-            cart_screen.refresh_cart()
+        self.root.children[0].current = 'Start'
+
+        self.mqtt_client = MQTT()
+        self.mqtt_client.start_listening()
+
+        self.mqtt_client.set_rfid_user_callback(self.user_tap_callback)
+
+    @mainthread
+    def user_tap_callback(self, user):
+        if self.current_user is None:
+            self.current_user = user
+            self.root.children[0].transition.direction = 'left'
+            self.root.children[0].current = 'Cart'
+
+    def stop(self, *largs):
+        self.mqtt_client.stop_listening()
 
 
 if __name__ == "__main__":

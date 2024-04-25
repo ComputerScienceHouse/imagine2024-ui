@@ -26,8 +26,8 @@ class User:
             return False
 
     def __str__(self):
-        return (f'User[{self.uid},{self.name},{self.token},${self.balance},'
-                f'{self.payment_type},{self.email},{self.phone}]')
+        return '{' + (f'"id": {self.uid}, "name": "{self.name}", "token": "{self.token}", "balance": {self.balance}, '
+                      f'"payment_type": "{self.payment_type}", "email": "{self.email}", "phone": "{self.phone}"') + '}'
 
 
 class Item:
