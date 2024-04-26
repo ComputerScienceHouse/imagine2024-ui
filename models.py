@@ -85,7 +85,8 @@ class Slot:
     _previous_weight_g: float
     # Store a number of previous weights to calculate rolling average
     _last_weights_store = list
-    _last_quantity_store = list
+    _last_pos = False
+    _last_neg = False
 
     def __init__(self, parent_shelf: Shelf, item: Item):
         # Set passed in values
@@ -96,10 +97,8 @@ class Slot:
         self._previous_weight_g = 0
         # Initialize list of previous values
         self._last_weights_store = list()
-        self._last_quantity_store = list()
         for i in range(CERTAINTY_CONSTANT - 1):
             self._last_weights_store.append(0)
-            self._last_quantity_store.append(0)
 
     def set_conversion_factor(self, value: float) -> None:
         """
@@ -134,23 +133,28 @@ class Slot:
         # Difference from previous iteration to now
         difference_g = rolling_average - self._previous_weight_g
         remainder_weight = difference_g % self.item.avg_weight
-        quantity = 0
         # Check that the remainder is within the top std_dev or bottom_std of the avg_weight
         if remainder_weight >= self.item.avg_weight - self.item.std_weight or remainder_weight <= self.item.avg_weight + self.item.std_weight:
             # Calculate quantity removed
-            quantity = round(difference_g / self.item.avg_weight) - sum(self._last_quantity_store)
+            quantity = round(difference_g / self.item.avg_weight)
             if quantity > 0:
-                print(f"\t{quantity} item(s) placed back")
+                if not self._last_pos:
+                    print(f"\t{quantity} item(s) placed back")
+                    self._last_pos = True
+                else:
+                    self._last_pos = False
             elif quantity < 0:
-                print(f"\t{quantity} item(s) removed")
+                if not self._last_neg:
+                    print(f"\t{quantity} item(s) removed")
+                    self._last_neg = True
+                else:
+                    self._last_neg = False
 
         # Update previous rate and rolling average data for next iteration
         oldest_weight = self._last_weights_store[-1]
         self._last_weights_store.insert(0, normalized_weight_g)
         self._last_weights_store.pop()
         self._previous_weight_g = oldest_weight
-        self._last_quantity_store.insert(0, quantity)
-        self._last_quantity_store.pop()
 
 
 class Stock:
