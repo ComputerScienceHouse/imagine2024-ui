@@ -165,6 +165,7 @@ ScreenManager:
 
 <ImageButton>:
     size_hint: (0.611, 0.207)
+    pos_hint: (0.7, 0.7)
 
     canvas:
         Color:
@@ -177,8 +178,8 @@ ScreenManager:
     RelativeLayout:
 
         Image:
-            size_hint: .15, .15
-            pos_hint: {'center_x': 0.2, 'center_y': 0.2}
+            size_hint: .6, .6
+            pos_hint: {'center_x': 2.5, 'center_y': .7}
             source: root.source
 
         Label:
@@ -186,6 +187,7 @@ ScreenManager:
             text_size: root.size
             font_size: '26.365sp'
             font_name: 'Roboto'
+            pos_hint: {'center_x': 5.7, 'center_y': 1.05}
             #x: self.parent.x + (self.parent.width / 2) - (self.width / 2)
             #y: self.parent.y + (self.parent.height / 2) - (self.height / 3)
 
