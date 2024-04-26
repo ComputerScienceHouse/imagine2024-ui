@@ -1,6 +1,9 @@
 from kivy.loader import Loader
+from typing import List
 
 WEIGHT_UNIT = "g"
+STD_MULTIPLIER = 1
+CERTAINTY_CONSTANT = 3  # number of update iterations before an item is classified as "added" or "removed"
 
 
 class User:
@@ -66,6 +69,88 @@ class Item:
                 f'{self.units}units,{self.avg_weight}{WEIGHT_UNIT},'
                 f'{self.std_weight}{WEIGHT_UNIT},{self.thumbnail_url},'
                 f'{self.vision_class}]')
+
+
+class Shelf:
+    # TODO implement Shelf
+    pass
+
+
+class Slot:
+
+    parent_shelf: Shelf
+    item: Item
+    _conversion_factor: float
+    # Weight of iteration before ROLLING_AVERAGE (CERTAINTY_CONSTANT + 1)
+    _previous_weight_g: float
+    # Store a number of previous weights to calculate rolling average
+    _last_weights_store = list
+    _last_quantity_store = list
+
+    def __init__(self, parent_shelf: Shelf, item: Item):
+        # Set passed in values
+        self.parent_shelf = parent_shelf
+        self.item = item
+        # Initialize weights and conversion factor
+        self._conversion_factor = 1
+        self._previous_weight_g = 0
+        # Initialize list of previous values
+        self._last_weights_store = list()
+        self._last_quantity_store = list()
+        for i in range(CERTAINTY_CONSTANT - 1):
+            self._last_weights_store.append(0)
+            self._last_quantity_store.append(0)
+
+    def set_conversion_factor(self, value: float) -> None:
+        """
+        Set the conversion factor. This should be calculating by:
+        1. Take the raw value of the scale with no weight (value is 'x1')
+        2. Get a calibration weight. (Weight is 'x2')
+        3. Take the raw value of the scale with a calibration weight (value is 'x3')
+        4. conversion_factor = (x2) / (x3 - x1)
+        :param value: float new conversion factor
+        :return: None
+        """
+        self._conversion_factor = value
+
+    def get_conversion_factor(self) -> float:
+        """
+        Get the conversion factor
+        :return: float conversion factor
+        """
+        return self._conversion_factor
+
+    def update(self, raw_weight_value):
+        """
+        Update this slot object with its newly received weight value
+        :param raw_weight_value: Raw weight value
+        :return:
+        """
+        # Normalize weight with conversion factor
+        normalized_weight_g = raw_weight_value * self._conversion_factor
+        # Calculate rolling average
+        rolling_average = (sum(self._last_weights_store) + normalized_weight_g) / (len(self._last_weights_store) + 1)
+
+        # Difference from previous iteration to now
+        difference_g = rolling_average - self._previous_weight_g
+        remainder_weight = difference_g % self.item.avg_weight
+        quantity = 0
+        # Check that the remainder is within the top std_dev or bottom_std of the avg_weight
+        if remainder_weight >= self.item.avg_weight - self.item.std_weight or remainder_weight <= self.item.avg_weight + self.item.std_weight:
+            # Calculate quantity removed
+            quantity = round(difference_g / self.item.avg_weight) - sum(self._last_quantity_store)
+            if quantity > 0:
+                print(f"\t{quantity} item(s) placed back")
+            elif quantity < 0:
+                print(f"\t{quantity} item(s) removed")
+
+        # Update previous rate and rolling average data for next iteration
+        oldest_weight = self._last_weights_store[-1]
+        self._last_weights_store.insert(0, normalized_weight_g)
+        self._last_weights_store.pop()
+        self._previous_weight_g = oldest_weight
+        self._last_quantity_store.insert(0, quantity)
+        self._last_quantity_store.pop()
 
 
 class Stock:
