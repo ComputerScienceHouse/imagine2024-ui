@@ -1,19 +1,71 @@
+from kivy.loader import Loader
+
+WEIGHT_UNIT = "g"
+
+
 class User:
-    def __init__(self, uid, name, balance, payment_type):
+    def __init__(self, uid, name, token, balance, payment_type, email, phone):
         self.uid = uid
         self.name = name
+        self.token = token
         self.balance = balance
         self.payment_type = payment_type
-        self.email = ""
-        self.phone = ""
+        self.email = email
+        self.phone = phone
+
+    def __eq__(self, other):
+        if isinstance(other, User):
+            return (self.uid == other.uid
+                    and self.name == other.name
+                    and self.token == other.token
+                    and self.balance == other.balance
+                    and self.payment_type == other.payment_type
+                    and self.email == other.email
+                    and self.phone == other.phone)
+        else:
+            return False
+
+    def __str__(self):
+        return '{' + (f'"id": {self.uid}, "name": "{self.name}", "token": "{self.token}", "balance": {self.balance}, '
+                      f'"payment_type": "{self.payment_type}", "email": "{self.email}", "phone": "{self.phone}"') + '}'
 
 
 class Item:
-    def __init__(self, name, price, avg_weight, std_weight):
+    def __init__(
+            self, item_id, name, upc, price, units, avg_weight, std_weight,
+            thumbnail_url, vision_class
+    ):
+        self.item_id = item_id
         self.name = name
+        self.upc = upc
         self.price = price
+        self.units = units
         self.avg_weight = avg_weight
         self.std_weight = std_weight
+        self.thumbnail_url = thumbnail_url
+        # Async download the image and store it
+        self.thumbnail = Loader.image(thumbnail_url)
+        self.vision_class = vision_class
+
+    def __eq__(self, other):
+        if isinstance(other, Item):
+            return (self.item_id == other.item_id
+                    and self.name == other.name
+                    and self.upc == other.upc
+                    and self.price == other.price
+                    and self.units == other.units
+                    and self.avg_weight == other.avg_weight
+                    and self.std_weight == other.std_weight
+                    and self.thumbnail_url == other.thumbnail_url
+                    and self.vision_class == other.vision_class)
+        else:
+            return False
+
+    def __str__(self):
+        return (f'Item[{self.item_id},{self.name},UPC:{self.upc},${self.price},'
+                f'{self.units}units,{self.avg_weight}{WEIGHT_UNIT},'
+                f'{self.std_weight}{WEIGHT_UNIT},{self.thumbnail_url},'
+                f'{self.vision_class}]')
 
 
 class Stock:
