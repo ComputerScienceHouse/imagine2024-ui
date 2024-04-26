@@ -19,9 +19,10 @@ ScreenManager:
         RelativeLayout:
 
             # Still working on this, lets leave it out for now
-            #ImageButton:
-            #    source: 'images/tapIcon.png'
-            #    text: 'Tap card to start'
+            ImageButton:
+                source: 'images/tapIcon.png'
+                text: 'Tap card to start'
+                pos_hint: {'center_x': 0.5, 'center_y': 0.15}
 
             # How can we make this bigger?
             MDIconButton:
@@ -34,6 +35,8 @@ ScreenManager:
 
             Image:
                 source: 'images/logo.png'
+                size_hint: .45, .45
+                pos_hint: {'center_x': 0.5, 'center_y': 0.6}
 
             ### Remove this once NFC works :tm:
             MDButton:
@@ -49,37 +52,59 @@ ScreenManager:
                     text:'Go to Cart'
 
     CartScreen:
-        md_bg_color: self.theme_cls.backgroundColor
         name: 'Cart'
 
-        # This should be a scrollview pls make this a scrollview
         BoxLayout:
-            orientation: 'vertical'
-            width: 2*root.width/3
+            orientation: 'horizontal'
 
-            CartItem:
-                title: 'Jolt Soda'
-                source: 'images/oof.png'
-                price: '3.00'
-                quantity: '3'
+            ScrollView:
+                RecycleView:
+                    id: cart_view
+                    viewclass: 'CartItem'
+                    RecycleBoxLayout:
+                        default_size: None, dp(150)
+                        default_size_hint: 1, None
+                        size_hint_y: None
+                        height: self.minimum_height
+                        orientation: 'vertical'
+                        spacing: dp(10)
 
-            CartItem:
-                title: 'Jolt Soda'
-                source: 'images/oof.png'
-                price: '3.00'
-                quantity: '3'
+            BoxLayout:
+                size_hint: (0.5, 1)
 
-            CartItem:
-                title: 'Jolt Soda'
-                source: 'images/oof.png'
-                price: '3.00'
-                quantity: '3'
+                orientation: 'vertical'
 
-            CartItem:
-                title: 'Jolt Soda'
-                source: 'images/oof.png'
-                price: '3.00'
-                quantity: '3'
+                Button:
+                    text: 'Cancel Transaction'
+                    background_normal: ''
+                    background_down: 'images/oof.png'
+                    background_color: 0.9686, 0.4118, 0.0078, 1
+
+                BoxLayout:
+                    size_hint: (1, 5)
+                    orientation: 'vertical'
+
+                    Label:
+                        text: 'Current User Information'
+
+                    Label:
+                        name: 'name_field'
+                        text: 'Name:'
+
+                    Label:
+                        name: 'card_field'
+                        text: 'Card:'
+
+                    Label:
+                        name: 'email_field'
+                        text: 'Email:'
+
+                    Label:
+                        name: 'phone_field'
+                        text: 'Phone:'
+
+                    Label:
+                        text: 'Finished? Close the door'
 
         ### Do not leave this in
         MDButton:
@@ -138,31 +163,38 @@ ScreenManager:
 #
 ###########################
 
-<ImageButton>
+<ImageButton>:
+    size_hint: (0.611, 0.207)
+    pos_hint: (0.7, 0.7)
+
+    canvas:
+        Color:
+            rgb: 0.42, 0.0, 0.39
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [(20, 20), (20, 20), (20, 20), (20, 20)]
+
     RelativeLayout:
-        size: (626, 110)
-        
-        # I think this is the only way to get a rounded rectangle on the screen.
-        #   It doesn't need to be a button so this should be fine right
-        canvas:
-            Color:
-                rgb: 0.42, 0.0, 0.39
-            RoundedRectangle:
-                size: self.size
-                pos: self.pos
-                radius: [(20, 20), (20, 20), (20, 20), (20, 20)]
 
         Image:
-            pos_hint: {'center_x': 0.2, 'center_y': 0.5}
+            size_hint: .6, .6
+            pos_hint: {'center_x': 2.5, 'center_y': .7}
             source: root.source
 
-        MDLabel:
+        Label:
             text: root.text
+            text_size: root.size
+            font_size: '26.365sp'
+            font_name: 'Roboto'
+            pos_hint: {'center_x': 5.7, 'center_y': 1.05}
+            #x: self.parent.x + (self.parent.width / 2) - (self.width / 2)
+            #y: self.parent.y + (self.parent.height / 2) - (self.height / 3)
 
 <CartItem>
     size: "144dp", "170dp"
 
-    Image:
+    AsyncImage:
         source: root.source
 
     MDLabel:

@@ -48,7 +48,7 @@ class MemberCard(MDCard):
 
 class MainApp(MDApp):
     def build(self):
-        Window.size = (1024,600)
+        Window.size = (800,480)
         
         self.root = BoxLayout()
 
