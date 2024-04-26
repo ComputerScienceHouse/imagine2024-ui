@@ -1,3 +1,4 @@
+import json
 import platform
 import threading
 from typing import List
@@ -94,6 +95,11 @@ class MainApp(MDApp):
 
         # Set default loading image
         Loader.loading_image = Image('./images/item_placeholder.png')
+
+        item = models.Item(1, 'test', '', 3, 20, 226, 10, '', '')
+        shelf = models.Shelf()
+        self.slot = models.Slot(shelf, item)
+        self.slot.set_conversion_factor(0.223)
         
         self.root = BoxLayout()
 
@@ -105,6 +111,7 @@ class MainApp(MDApp):
         self.mqtt_client.start_listening()
 
         self.mqtt_client.set_rfid_user_callback(self.user_tap_callback)
+        self.mqtt_client.set_shelf_data_callback(self.mqtt_data_callback)
 
     @mainthread
     def user_tap_callback(self, user):
@@ -112,6 +119,13 @@ class MainApp(MDApp):
             self.current_user = user
             self.root.children[0].transition.direction = 'left'
             self.root.children[0].current = 'Cart'
+
+    @mainthread
+    def mqtt_data_callback(self, data_string):
+        data = json.loads(data_string)
+        slot_values = data['data']
+        self.slot.update(slot_values[0])
+        print(data)
 
     def stop(self, *largs):
         self.mqtt_client.stop_listening()
