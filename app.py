@@ -266,7 +266,7 @@ class MainApp(MDApp):
         self.cart_screen.empty_cart()
         self.root.children[0].transition.direction = 'left'
         self.root.children[0].current = 'Cart'
-        # TODO open door
+        self.mqtt_client.publish_doors_open()
         self.state = States.CART_DOOR_OPEN
 
     def cancel_transaction(self):

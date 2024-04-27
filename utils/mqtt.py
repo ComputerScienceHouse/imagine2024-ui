@@ -19,6 +19,7 @@ MQTT_BROKER_PORT = 1883
 RFID_USER_TOPIC = "rfid/user"
 SHELF_DATA_TOPIC = "shelf/data"
 DOOR_CLOSE_TOPIC = "aux/door/closed"
+DOORS_OPEN_TOPIC = "aux/control/doors"
 
 
 class MQTT:
@@ -46,7 +47,6 @@ class MQTT:
         self._rfid_user_callback = None
         self._door_close_callback = None
         self._shelf_data_callback = None
-
 
     def _internal_rfid_user_callback(self, client: mqtt.Client, userdata: Any, message: mqtt.MQTTMessage):
         """
@@ -104,6 +104,9 @@ class MQTT:
         :return:
         """
         self._door_close_callback = callback
+
+    def publish_doors_open(self):
+        self.client.publish(DOORS_OPEN_TOPIC, "open")
 
     def start_listening(self):
         self.client.loop_start()
