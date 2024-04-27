@@ -156,6 +156,33 @@ class Slot:
         self._previous_weight_g = oldest_weight
 
 
+class Shelf:
+
+    slots: List[Slot]
+
+    def __init__(self, items: List[Item]):
+        """
+        Create a new shelf
+        :param items: List of items in this shelf, one per slot
+        """
+        self.slots = list()
+        for item in items:
+            self.slots.append(Slot(self, item))
+
+    def update(self, raw_weights: List[float]):
+        """
+        Update all slots in this shelf with the raw weights
+        :param raw_weights:
+        :return:
+        """
+        # iterate through all weight values
+        for i in range(len(raw_weights)):
+            # Make sure a slot corresponds to this weight
+            if i < len(self.slots):
+                # Update the weight
+                self.slots[i].update(raw_weights[i])
+
+
 class Stock:
     def __init__(self):
         self.items = {}         # Item: quantity
