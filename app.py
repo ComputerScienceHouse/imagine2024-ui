@@ -129,7 +129,7 @@ class States(Enum):
 
 class MainApp(MDApp):
 
-    current_user: models.User = None
+    current_user: models.User | None = None
     state: States
     cart_screen: CartScreen | None
 
@@ -162,10 +162,15 @@ class MainApp(MDApp):
         self.mqtt_client.set_door_closed_callback(self.door_closed_callback)
 
     @mainthread
-    def user_tap_callback(self, user):
-        if self.current_user is None:
-            self.current_user = user
-            self.open_cart_screen()
+    def user_tap_callback(self, user: models.User):
+        if self.state == States.WAITING_FOR_USER_TOKEN:
+            if 'admin' in user.name:
+                # Admin user
+                self.root.children[0].transition.direction = 'right'
+                self.root.children[0].current = 'Debug'
+            else:
+                self.current_user = user
+                self.open_cart_screen()
 
     @mainthread
     def door_closed_callback(self, message):
@@ -175,8 +180,7 @@ class MainApp(MDApp):
         """
         if self.state == States.CANCEL_WAIT_FOR_DOOR_CLOSE:
             # Cancelled transaction waiting on door to close. Go to start screen
-            self.root.children[0].transition.direction = 'right'
-            self.root.children[0].current = 'Start'
+            self.go_to_start_screen()
         elif self.state == States.CART_DOOR_OPEN:
             # Active transaction signal end. Go to thank you screen, then go to cart screen
             self.root.children[0].transition.direction = 'left'
@@ -186,6 +190,7 @@ class MainApp(MDApp):
     def go_to_start_screen(self):
         self.root.children[0].transition.direction = 'right'
         self.root.children[0].current = 'Start'
+        self.current_user = None
 
     def open_cart_screen(self):
         """
