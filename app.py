@@ -74,16 +74,16 @@ class ImageButton(Widget):
     text = StringProperty()
 
 
-class ShelfItem(BoxLayout):
-    col = NumericProperty()
-    row = NumericProperty()
+class ShelfItem(Widget):
+    shelf = NumericProperty()
+    slot = NumericProperty()
     text = StringProperty()
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.text = f"Col: {self.col}  Row: {self.row}"
-        self.size_hint = (None, None)
-        self.size = ("120dp", "120dp")
+    def on_shelf(self, instance, value):
+        self.text = f"Shelf: {self.shelf}  Slot: {self.slot}"
+
+    def on_slot(self, instance, value):
+        self.text = f"Shelf: {self.shelf}  Slot: {self.slot}"
 
     def calibrate(self):
         pass
@@ -101,8 +101,6 @@ class MainApp(MDApp):
     def __init__(self, **kwargs):
         super().__init__()
         self.mqtt_client = None
-
-
 
     def build(self):
         Window.size = (800,480)

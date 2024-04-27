@@ -165,7 +165,7 @@ ScreenManager:
     AttractScreen:
         name: 'Attract'
 
-    DebugScreen
+    DebugScreen:
         md_bg_color: self.theme_cls.backgroundColor
         name: 'Debug'
 
@@ -189,16 +189,30 @@ ScreenManager:
             MDButtonText:
                 text: 'Open Door'
 
-        MDGridLayout:
-            id: grid_layout
+        GridLayout:
             cols: 4
-            size_hint: None, None
-            size: self.minimum_size
-            padding: "10dp"
-            spacing: "10dp"
+            rows: 4
+            #adaptive_height: True
+            #padding: "2dp"
+            #pos_hint: {'center_x': 0.5, 'center_y': 0.5}
             ShelfItem:
-                row: 1
-                col: 1
+                shelf: 1
+                slot: 1
+            ShelfItem:
+                shelf: 2
+                slot: 1
+            ShelfItem:
+                shelf: 3
+                slot: 1
+            ShelfItem:
+                shelf: 4
+                slot: 1
+            ShelfItem:
+                shelf: 1
+                slot: 2
+
+
+
 
         # weight values of all shelves (4 shelves with 4 slot) see each value of each slot
         # calibration button to get weights of individual items
@@ -282,30 +296,24 @@ ScreenManager:
         halign: "center"
         padding: "4dp", "4dp"
 
-#<ShelfItem>
-#    BoxLayout:
-#        orientation: 'vertical'
-#        #height: dp(200)  # Define a fixed height for the layout
-#        #spacing: dp(10)
-#        MDLabel:
-#            text: root.text
-#            #size_hint_x: None
-#            #width: dp(200)  # Set width based on text
-#        MDButton:
-#            style: 'filled'
-#            #width: dp(130)
-#            on_press:
-#                # TODO: open door function
-#            MDButtonText:
-#                #size_hint_x: None
-#                text: 'Calibrate'
-
 <ShelfItem>:
-    MDLabel:
-        text: root.text
-        halign: "center"
-    MDButton:
-        on_release: root.calibrate()
-        MDButtonText:
-            text: "Calibrate"
+    size_hint: None, None
+    width: "150dp"  # Set the width of the shelf item to fit the label text.
+    height: "120dp"
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(2)  # Adjust the padding as needed
+        spacing: dp(5)
+        MDLabel:
+            text: root.text
+            size_hint_y: None
+            height: self.texture_size[1]  # Height just enough for the text.
+            size_hint_x: 2.5  # Take full width of the parent.
+            halign: 'center'
+            valign: 'center'
+            text_size: self.width, None
+        MDButton:
+            on_release: #TODO: implement calibrate function
+            MDButtonText:
+                text: "Calibrate"
 
