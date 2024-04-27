@@ -3,7 +3,7 @@ import platform
 import threading
 from typing import List, Dict
 
-from kivy.clock import mainthread
+from kivy.clock import mainthread, Clock
 from kivy.core.image import Image
 from kivy.loader import Loader
 from kivy.uix.screenmanager import Screen
@@ -13,7 +13,7 @@ from kivymd.uix.card import MDCard
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.list.list import MDListItem
 
-from kivy.properties import StringProperty, ListProperty
+from kivy.properties import StringProperty, ListProperty, NumericProperty
 import models
 from utils.mqtt import MQTT
 from kivy.properties import StringProperty
@@ -23,6 +23,7 @@ from kivy.uix.widget import Widget
 import database
 import models
 import rfid_reader
+from enum import Enum
 
 RUNNING_ON_TARGET = False # Store if this is running on raspberry pi
 
@@ -47,6 +48,11 @@ class InfoScreen(MDScreen):
 class CartScreen(Screen):
     cart_items = ListProperty([])
 
+    def _refresh_cart(self):
+        cart_view = self.children[1].children[1].children[0]
+        cart_view.data = [{'title': item['title'], 'source': item['source'], 'price': item['price'], 'quantity': item['quantity']} for item in self.cart_items]
+        cart_view.refresh_from_data()
+
     def add_item(self, item: models.Item, quantity: int):
         """
         Add an item to the
@@ -56,18 +62,54 @@ class CartScreen(Screen):
         """
         item_to_add = {'title': str(item.name), 'source': str(item.thumbnail_url), 'price': str(item.price), 'quantity': str(quantity)}
         self.cart_items.insert(0, item_to_add)
+        self._refresh_cart()
 
-    def refresh_cart(self):
-        cart_view = self.children[1].children[1].children[0]
-        cart_view.data = [{'title': item['title'], 'source': item['source'], 'price': item['price'], 'quantity': item['quantity']} for item in self.cart_items]
-        cart_view.refresh_from_data()
+    def remove_item(self, item: models.Item, quantity_to_remove: int):
+        """
+        Remove an item from the cart
+        :param item: Item to remove
+        :param quantity_to_remove: Quantity to remove
+        :return:
+        """
+        for i in range(len(self.cart_items)):
+            if self.cart_items[i].name == item.name:
+                # This item is the one to remove
+                new_quantity = self.cart_items[i].quantity - quantity_to_remove
+                if new_quantity <= 0:
+                    # Remove this item completely
+                    self.cart_items.remove(i)
+                else:
+                    # Adjust the quantity of this item
+                    self.cart_items[i].quantity = new_quantity
+                # Refresh view
+                self._refresh_cart()
+                return
+
+    def empty_cart(self):
+        """
+        Empty the cart
+        :return:
+        """
+        self.cart_items.clear()
+        self._refresh_cart()
 
 
 class StartScreen(MDScreen):
     pass
 
-
 class AttractScreen(MDScreen):
+    pass
+
+class DebugScreen(MDScreen):
+    def open_door(self):
+        print("Opening door")
+        pass
+
+class CancelScreen(MDScreen):
+    pass
+
+
+class ThankYouScreen(MDScreen):
     pass
 
 
@@ -83,21 +125,48 @@ class ImageButton(Widget):
     text = StringProperty()
 
 
+class ShelfItem(Widget):
+    shelf = NumericProperty()
+    slot = NumericProperty()
+    text = StringProperty()
+
+    def on_shelf(self, instance, value):
+        self.text = f"Shelf: {self.shelf}  Slot: {self.slot}"
+
+    def on_slot(self, instance, value):
+        self.text = f"Shelf: {self.shelf}  Slot: {self.slot}"
+
+    def calibrate(self):
+        pass
+
 class MemberCard(MDCard):
     name = StringProperty()
     job_title = StringProperty()
     major = StringProperty()
 
 
+class States(Enum):
+    WAITING_FOR_USER_TOKEN = 1
+    CART_DOOR_OPEN = 2
+    THANK_YOU = 3
+    CANCEL_WAIT_FOR_DOOR_CLOSE = 4
+    DEBUG = 5
+    ABOUT = 6
+
+
 class MainApp(MDApp):
 
-    current_user: models.User = None
     connected_shelves: Dict[str, models.Shelf]
+    current_user: models.User | None = None
+    state: States
+    cart_screen: CartScreen | None
 
     def __init__(self, **kwargs):
         super().__init__()
         self.mqtt_client = None
         self.connected_shelves = None
+        self.state = States.WAITING_FOR_USER_TOKEN
+        self.cart_screen = None
 
     def build(self):
         Window.size = (800,480)
@@ -107,29 +176,83 @@ class MainApp(MDApp):
         # Set default loading image
         Loader.loading_image = Image('./images/item_placeholder.png')
 
-        item = models.Item(1, 'test', '', 3, 20, 226, 10, '', '')
-        shelf = models.Shelf()
-        self.slot = models.Slot(shelf, item)
-        self.slot.set_conversion_factor(0.223)
-
         self.root = BoxLayout()
 
         self.root.add_widget(Builder.load_file('app.kv'))
+        self.cart_screen: CartScreen = self.root.children[0].screens[1]
 
         self.root.children[0].current = 'Start'
+        self.state = States.WAITING_FOR_USER_TOKEN
 
         self.mqtt_client = MQTT()
         self.mqtt_client.start_listening()
 
         self.mqtt_client.set_rfid_user_callback(self.user_tap_callback)
         self.mqtt_client.set_shelf_data_callback(self.shelf_data_callback)
+        self.mqtt_client.set_door_closed_callback(self.door_closed_callback)
 
     @mainthread
-    def user_tap_callback(self, user):
-        if self.current_user is None:
-            self.current_user = user
+    def user_tap_callback(self, user_txt):
+        if user_txt[:5] != "User[":
+            return
+        user_split = user_txt[5:].split(',')
+        user = models.User(
+            user_split[0],
+            user_split[1],
+            user_split[2],
+            user_split[3][0:],
+            user_split[4],
+            user_split[5],
+            user_split[6]
+        )
+        if self.state == States.WAITING_FOR_USER_TOKEN:
+            if 'admin' in user.name:
+                # Admin user
+                self.root.children[0].transition.direction = 'right'
+                self.root.children[0].current = 'Debug'
+            else:
+                self.current_user = user
+                self.open_cart_screen()
+
+    @mainthread
+    def door_closed_callback(self, message):
+        """
+        Callback for when door closed message is received over MQTT
+        :return:
+        """
+        if self.state == States.CANCEL_WAIT_FOR_DOOR_CLOSE:
+            # Cancelled transaction waiting on door to close. Go to start screen
+            self.go_to_start_screen()
+        elif self.state == States.CART_DOOR_OPEN:
+            # Active transaction signal end. Go to thank you screen, then go to cart screen
             self.root.children[0].transition.direction = 'left'
-            self.root.children[0].current = 'Cart'
+            self.root.children[0].current = 'ThankYou'
+            Clock.schedule_once(self.go_to_start_screen(), 3)
+
+    def go_to_start_screen(self):
+        self.root.children[0].transition.direction = 'right'
+        self.root.children[0].current = 'Start'
+        self.current_user = None
+
+    def open_cart_screen(self):
+        """
+        Open the cart screen
+        :return:
+        """
+        self.cart_screen.empty_cart()
+        self.root.children[0].transition.direction = 'left'
+        self.root.children[0].current = 'Cart'
+        # TODO open door
+        self.state = States.CART_DOOR_OPEN
+
+    def cancel_transaction(self):
+        """
+        Cancel transaction
+        :return:
+        """
+        self.state = States.CANCEL_WAIT_FOR_DOOR_CLOSE
+        self.root.children[0].transition.direction = 'left'
+        self.root.children[0].current = 'Cancel'
 
     @mainthread
     def shelf_data_callback(self, data_string):

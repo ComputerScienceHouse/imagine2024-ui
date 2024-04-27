@@ -51,6 +51,15 @@ ScreenManager:
                 MDButtonText:
                     text:'Go to Cart'
 
+            MDButton:
+                pos_hint:{'center_x': 0.2, 'center_y': 0.2}
+                style: 'filled'
+                on_press:
+                    root.transition.direction = 'left'
+                    root.current = 'Debug'
+                MDButtonText:
+                    text: 'Go to Debug'
+
     CartScreen:
         name: 'Cart'
 
@@ -79,6 +88,7 @@ ScreenManager:
                     background_normal: ''
                     background_down: 'images/oof.png'
                     background_color: 0.9686, 0.4118, 0.0078, 1
+                    on_press: app.cancel_transaction()
 
                 BoxLayout:
                     size_hint: (1, 5)
@@ -153,9 +163,78 @@ ScreenManager:
                 job_title: 'Cool Guy'
                 major: 'CS'
 
+    CancelScreen:
+        md_bg_color: self.theme_cls.backgroundColor
+        name: 'Cancel'
+
+        Label:
+            text: 'Close door to end transaction'
+            color: 0, 0, 0, 1
+            font_size: 30
+
+    ThankYouScreen:
+        md_bg_color: self.theme_cls.backgroundColor
+        name: 'ThankYou'
+
+        Label:
+            text: 'Your transaction is finished. Thank you!'
+            color: 0, 0, 0, 1
+            font_size: 30
+
     AttractScreen:
         name: 'Attract'
 
+    DebugScreen:
+        md_bg_color: self.theme_cls.backgroundColor
+        name: 'Debug'
+
+        # Go back to start button
+        MDButton:
+            pos_hint: {'center_x': 0.6, 'center_y': 0.95}
+            style: 'filled'
+            on_press:
+                root.transition.direction = 'left'
+                root.current = 'Start'
+
+            MDButtonText:
+                text:'Go to Start'
+
+        # Open door button
+        MDButton:
+            pos_hint: {'center_x': 0.4, 'center_y': 0.95}
+            style: 'filled'
+            on_press:
+                # TODO: open door function
+            MDButtonText:
+                text: 'Open Door'
+
+        GridLayout:
+            cols: 4
+            rows: 4
+            #adaptive_height: True
+            #padding: "2dp"
+            #pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            ShelfItem:
+                shelf: 1
+                slot: 1
+            ShelfItem:
+                shelf: 2
+                slot: 1
+            ShelfItem:
+                shelf: 3
+                slot: 1
+            ShelfItem:
+                shelf: 4
+                slot: 1
+            ShelfItem:
+                shelf: 1
+                slot: 2
+
+
+
+
+        # weight values of all shelves (4 shelves with 4 slot) see each value of each slot
+        # calibration button to get weights of individual items
 
 ###########################
 #
@@ -235,3 +314,25 @@ ScreenManager:
         color: "black"
         halign: "center"
         padding: "4dp", "4dp"
+
+<ShelfItem>:
+    size_hint: None, None
+    width: "150dp"  # Set the width of the shelf item to fit the label text.
+    height: "120dp"
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(2)  # Adjust the padding as needed
+        spacing: dp(5)
+        MDLabel:
+            text: root.text
+            size_hint_y: None
+            height: self.texture_size[1]  # Height just enough for the text.
+            size_hint_x: 2.5  # Take full width of the parent.
+            halign: 'center'
+            valign: 'center'
+            text_size: self.width, None
+        MDButton:
+            on_release: #TODO: implement calibrate function
+            MDButtonText:
+                text: "Calibrate"
+
