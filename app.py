@@ -2,7 +2,7 @@ import platform
 import threading
 from typing import List
 
-from kivy.clock import mainthread
+from kivy.clock import mainthread, Clock
 from kivy.core.image import Image
 from kivy.loader import Loader
 from kivy.uix.screenmanager import Screen
@@ -91,7 +91,12 @@ class StartScreen(MDScreen):
 class AttractScreen(MDScreen):
     pass
 
+
 class CancelScreen(MDScreen):
+    pass
+
+
+class ThankYouScreen(MDScreen):
     pass
 
 
@@ -154,12 +159,33 @@ class MainApp(MDApp):
         self.mqtt_client.start_listening()
 
         self.mqtt_client.set_rfid_user_callback(self.user_tap_callback)
+        self.mqtt_client.set_door_closed_callback(self.door_closed_callback)
 
     @mainthread
     def user_tap_callback(self, user):
         if self.current_user is None:
             self.current_user = user
             self.open_cart_screen()
+
+    @mainthread
+    def door_closed_callback(self, message):
+        """
+        Callback for when door closed message is received over MQTT
+        :return:
+        """
+        if self.state == States.CANCEL_WAIT_FOR_DOOR_CLOSE:
+            # Cancelled transaction waiting on door to close. Go to start screen
+            self.root.children[0].transition.direction = 'right'
+            self.root.children[0].current = 'Start'
+        elif self.state == States.CART_DOOR_OPEN:
+            # Active transaction signal end. Go to thank you screen, then go to cart screen
+            self.root.children[0].transition.direction = 'left'
+            self.root.children[0].current = 'ThankYou'
+            Clock.schedule_once(self.go_to_start_screen(), 3)
+
+    def go_to_start_screen(self):
+        self.root.children[0].transition.direction = 'right'
+        self.root.children[0].current = 'Start'
 
     def open_cart_screen(self):
         """
