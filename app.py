@@ -32,8 +32,6 @@ if platform.system() == "Linux" and "rpi" in platform.uname().release:
 class InfoScreen(MDScreen):
     pass
 
-
-
 class CartScreen(Screen):
     cart_items = ListProperty([])
 
@@ -56,8 +54,10 @@ class CartScreen(Screen):
 class StartScreen(MDScreen):
     pass
 
-
 class AttractScreen(MDScreen):
+    pass
+
+class DebugScreen(MDScreen):
     pass
 
 

@@ -51,6 +51,15 @@ ScreenManager:
                 MDButtonText:
                     text:'Go to Cart'
 
+            MDButton:
+                pos_hint:{'center_x': 0.2, 'center_y': 0.2}
+                style: 'filled'
+                on_press:
+                    root.transition.direction = 'left'
+                    root.current = 'Debug'
+                MDButtonText:
+                    text: 'Go to Debug'
+
     CartScreen:
         name: 'Cart'
 
@@ -156,6 +165,43 @@ ScreenManager:
     AttractScreen:
         name: 'Attract'
 
+    DebugScreen
+        md_bg_color: self.theme_cls.backgroundColor
+        name: 'Debug'
+
+        # Go back to start button
+        MDButton:
+            pos_hint: {'center_x': 0.6, 'center_y': 0.95}
+            style: 'filled'
+            on_press:
+                root.transition.direction = 'right'
+                root.current = 'Start'
+
+            MDButtonText:
+                text:'Go to Start'
+
+        # Open door button
+        MDButton:
+            pos_hint: {'center_x': 0.4, 'center_y': 0.95}
+            style: 'filled'
+            on_press:
+                # TODO: open door function
+            MDButtonText:
+                text: 'Open Door'
+
+        MDGridLayout:
+            adaptive_height: True
+
+            MDButton:
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                style: 'filled'
+                on_press:
+                # TODO: open door function
+                MDButtonText:
+                    text: 'Open Door'
+
+        # weight values of all shelves (4 shelves with 4 slot) see each value of each slot
+        # calibration button to get weights of individual items
 
 ###########################
 #
