@@ -51,14 +51,14 @@ ScreenManager:
                 MDButtonText:
                     text:'Go to Cart'
 
-            #MDButton:
-                #pos_hint:{'center_x': 0.2, 'center_y': 0.2}
-                #style: 'filled'
-                #on_press:
-                   # root.transition.direction = 'left'
-                    #root.current = 'Debug'
-                #MDButtonText:
-                #    text: 'Go to Debug'
+            MDButton:
+                pos_hint:{'center_x': 0.2, 'center_y': 0.2}
+                style: 'filled'
+                on_press:
+                    root.transition.direction = 'left'
+                    root.current = 'Debug'
+                MDButtonText:
+                    text: 'Go to Debug'
 
     CartScreen:
         name: 'Cart'
@@ -204,7 +204,7 @@ ScreenManager:
             pos_hint: {'center_x': 0.4, 'center_y': 0.95}
             style: 'filled'
             on_press:
-                # TODO: open door function
+                root.open_door()
             MDButtonText:
                 text: 'Open Door'
 

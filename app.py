@@ -269,6 +269,9 @@ class MainApp(MDApp):
         self.mqtt_client.publish_doors_open()
         self.state = States.CART_DOOR_OPEN
 
+    def open_door(self):
+        self.mqtt_client.publish_doors_open()
+
     def cancel_transaction(self):
         """
         Cancel transaction
