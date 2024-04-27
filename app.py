@@ -299,15 +299,15 @@ class MainApp(MDApp):
         # Check that slot values are a list
         if not isinstance(slot_values, list):
             raise Exception("IncorrectFormat: Slot values incorrect format (not list)")
-
-        adjustments = self.connected_shelves[shelf_id].update(slot_values)
-        for item, quantity_adjust in adjustments:
-            if quantity_adjust < 0:
-                self.cart_screen.add_item(item, quantity_adjust)
-                print("ADD ITEM TO CART")
-            elif quantity_adjust > 0:
-                self.cart_screen.remove_item(item, quantity_adjust)
-                print("REMOVE ITEM FROM CART")
+        if shelf_id in self.connected_shelves:
+            adjustments = self.connected_shelves[shelf_id].update(slot_values)
+            for item, quantity_adjust in adjustments:
+                if quantity_adjust < 0:
+                    self.cart_screen.add_item(item, quantity_adjust)
+                    print("ADD ITEM TO CART")
+                elif quantity_adjust > 0:
+                    self.cart_screen.remove_item(item, quantity_adjust)
+                    print("REMOVE ITEM FROM CART")
 
         # except KeyError as key_error:
         #     print("KeyError when parsing shelf data from MQTT")

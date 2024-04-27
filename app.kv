@@ -47,7 +47,7 @@ ScreenManager:
                     root.transition.direction = 'left'
                     # Set current screen to Cart
                     root.current = 'Cart'
-                
+
                 MDButtonText:
                     text:'Go to Cart'
 
@@ -136,7 +136,7 @@ ScreenManager:
             on_press:
                 root.transition.direction = 'down'
                 root.current = 'Start'
-            
+
             MDButtonText:
                 text:'Back to Start'
 
@@ -203,8 +203,7 @@ ScreenManager:
         MDButton:
             pos_hint: {'center_x': 0.4, 'center_y': 0.95}
             style: 'filled'
-            on_press:
-                root.open_door()
+            on_press: app.open_door()
             MDButtonText:
                 text: 'Open Door'
 
@@ -290,7 +289,7 @@ ScreenManager:
     orientation: 'vertical'
     size_hint: None, None
     size: "144dp", "170dp"
-        
+
     MDLabel:
         font_style: "Display"
         role: "small"
@@ -335,4 +334,3 @@ ScreenManager:
             on_release: #TODO: implement calibrate function
             MDButtonText:
                 text: "Calibrate"
-
