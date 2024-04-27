@@ -171,6 +171,7 @@ class Shelf:
         :param items: List of items in this shelf, one per slot
         """
         self.slots = list()
+        self.items = list()
         for item in items:
             self.slots.append(Slot(self, item))
             self.items.append(item)

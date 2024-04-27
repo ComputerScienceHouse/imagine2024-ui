@@ -34,7 +34,7 @@ if platform.system() == "Linux" and "rpi" in platform.uname().release:
 MOCK_ITEM = models.Item(1, "Swedish Fish", 11111, 3.19, 5, 266, 26, 'http://placehold.jp/150x150.png', 'pouch')
 # Hardcoded shelf data to use. Maps shelf ID (MAC address) to list of items (position indicates slot, 0 -> 4)
 SHELF_DATA = {
-    'id1': [MOCK_ITEM, MOCK_ITEM, MOCK_ITEM, MOCK_ITEM],
+    '80:65:99:E3:8B:92': [MOCK_ITEM, MOCK_ITEM, MOCK_ITEM, MOCK_ITEM],
     'id2': [MOCK_ITEM, MOCK_ITEM, MOCK_ITEM, MOCK_ITEM],
     'id3': [MOCK_ITEM, MOCK_ITEM, MOCK_ITEM, MOCK_ITEM],
     'id4': [MOCK_ITEM, MOCK_ITEM, MOCK_ITEM, MOCK_ITEM]
@@ -164,7 +164,7 @@ class MainApp(MDApp):
     def __init__(self, **kwargs):
         super().__init__()
         self.mqtt_client = None
-        self.connected_shelves = None
+        self.connected_shelves = dict()
         self.state = States.WAITING_FOR_USER_TOKEN
         self.cart_screen = None
 
@@ -284,6 +284,8 @@ class MainApp(MDApp):
                 # Get data for this shelf from hardcoded shelves
                 items_for_shelf = SHELF_DATA[shelf_id]
                 self.connected_shelves[shelf_id] = models.Shelf(items_for_shelf)
+                for slot in self.connected_shelves[shelf_id].slots:
+                    slot.set_conversion_factor(0.215)
                 # Update weight values
                 adjustments = self.connected_shelves[shelf_id].update(slot_values)
                 for item, quantity_adjust in adjustments:
@@ -291,7 +293,7 @@ class MainApp(MDApp):
                         self.cart_screen.add_item(item, quantity_adjust)
                     elif quantity_adjust < 0:
                         self.cart_screen.remove_item(item, quantity_adjust)
-                        
+
         except KeyError as key_error:
             print("KeyError when parsing shelf data from MQTT")
             print(f"\tData: '{data_string}'")
