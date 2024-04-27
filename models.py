@@ -147,7 +147,7 @@ class Slot:
             elif quantity < 0:
                 if not self._last_neg:
                     print(f"\t{quantity} item(s) removed")
-                    quantity_to_modify_cart = -quantity
+                    quantity_to_modify_cart = quantity
                     self._last_neg = True
                 else:
                     self._last_neg = False

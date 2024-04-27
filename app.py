@@ -1,4 +1,5 @@
 import json
+import math
 import platform
 import threading
 from typing import List, Dict
@@ -54,12 +55,19 @@ class CartScreen(Screen):
         cart_view.refresh_from_data()
 
     def add_item(self, item: models.Item, quantity: int):
+        quantity = abs(quantity)
         """
         Add an item to the
         :param item:
         :param quantity:
         :return:
         """
+        # Check if this item is already in the cart
+        for i in range(len(self.cart_items)):
+            if self.cart_items[i]['title'] == item.name:
+                # Item is already in the cart
+                self.cart_items[i]['quantity'] = int(self.cart_items[i]['quantity']) + quantity
+                return
         item_to_add = {'title': str(item.name), 'source': str(item.thumbnail_url), 'price': str(item.price), 'quantity': str(quantity)}
         self.cart_items.insert(0, item_to_add)
         self._refresh_cart()
@@ -71,16 +79,17 @@ class CartScreen(Screen):
         :param quantity_to_remove: Quantity to remove
         :return:
         """
+        quantity_to_remove = abs(quantity_to_remove)
         for i in range(len(self.cart_items)):
-            if self.cart_items[i].name == item.name:
+            if self.cart_items[i]['title'] == item.name:
                 # This item is the one to remove
-                new_quantity = self.cart_items[i].quantity - quantity_to_remove
+                new_quantity = int(self.cart_items[i]['quantity']) - quantity_to_remove
                 if new_quantity <= 0:
                     # Remove this item completely
-                    self.cart_items.remove(i)
+                    del self.cart_items[i]
                 else:
                     # Adjust the quantity of this item
-                    self.cart_items[i].quantity = new_quantity
+                    self.cart_items[i]['quantity'] = str(new_quantity)
                 # Refresh view
                 self._refresh_cart()
                 return
@@ -261,46 +270,53 @@ class MainApp(MDApp):
         :param data_string: The data string, directly from MQTT
         :return:
         """
-        try:
+        #try:
             # Deconstruct JSON data
-            data = json.loads(data_string)
-            print(data)
-            shelf_id = data['id']
-            slot_values = data['data']
-            send_time_millis = data['time']
+        data = json.loads(data_string)
+        print(data)
+        shelf_id = data['id']
+        slot_values = data['data']
+        send_time_millis = data['time']
 
-            # Check that slot values are a list
-            if not isinstance(slot_values, list):
-                raise Exception("IncorrectFormat: Slot values incorrect format (not list)")
+        # Check that slot values are a list
+        if not isinstance(slot_values, list):
+            raise Exception("IncorrectFormat: Slot values incorrect format (not list)")
 
-            if shelf_id in self.connected_shelves:
-                # Shelf is already connected
-                self.connected_shelves[shelf_id].update(slot_values)
-            else:
-                # Shelf is not connected
-                # Check if the shelf with this ID is included in possible shelves
-                if shelf_id not in SHELF_DATA:
-                    raise Exception(f"ShelfDoesNotExist: Provided shelf ID was not hardcoded into program (id: {shelf_id})")
-                # Get data for this shelf from hardcoded shelves
-                items_for_shelf = SHELF_DATA[shelf_id]
-                self.connected_shelves[shelf_id] = models.Shelf(items_for_shelf)
-                for slot in self.connected_shelves[shelf_id].slots:
-                    slot.set_conversion_factor(0.215)
-                # Update weight values
-                adjustments = self.connected_shelves[shelf_id].update(slot_values)
-                for item, quantity_adjust in adjustments:
-                    if quantity_adjust > 0:
-                        self.cart_screen.add_item(item, quantity_adjust)
-                    elif quantity_adjust < 0:
-                        self.cart_screen.remove_item(item, quantity_adjust)
+        if shelf_id in self.connected_shelves:
+            # Shelf is already connected
+            adjustments = self.connected_shelves[shelf_id].update(slot_values)
+            for item, quantity_adjust in adjustments:
+                if quantity_adjust < 0:
+                    self.cart_screen.add_item(item, quantity_adjust)
+                    print("ADD ITEM TO CART")
+                elif quantity_adjust > 0:
+                    self.cart_screen.remove_item(item, quantity_adjust)
+                    print("REMOVE ITEM FROM CART")
+        else:
+            # Shelf is not connected
+            # Check if the shelf with this ID is included in possible shelves
+            if shelf_id not in SHELF_DATA:
+                raise Exception(f"ShelfDoesNotExist: Provided shelf ID was not hardcoded into program (id: {shelf_id})")
+            # Get data for this shelf from hardcoded shelves
+            items_for_shelf = SHELF_DATA[shelf_id]
+            self.connected_shelves[shelf_id] = models.Shelf(items_for_shelf)
+            for slot in self.connected_shelves[shelf_id].slots:
+                slot.set_conversion_factor(0.215)
+            # Update weight values
+            adjustments = self.connected_shelves[shelf_id].update(slot_values)
+            for item, quantity_adjust in adjustments:
+                if quantity_adjust > 0:
+                    self.cart_screen.add_item(item, quantity_adjust)
+                elif quantity_adjust < 0:
+                    self.cart_screen.remove_item(item, quantity_adjust)
 
-        except KeyError as key_error:
-            print("KeyError when parsing shelf data from MQTT")
-            print(f"\tData: '{data_string}'")
-            print(f"\tFull exception: {key_error}")
-        except Exception as e:
-            print("Exception occurred when reading shelf data from MQTT")
-            print(f"Full exception: {e}")
+        # except KeyError as key_error:
+        #     print("KeyError when parsing shelf data from MQTT")
+        #     print(f"\tData: '{data_string}'")
+        #     print(f"\tFull exception: {key_error}")
+        # except Exception as e:
+        #     print("Exception occurred when reading shelf data from MQTT")
+        #     print(f"Full exception: {e}")
 
     def stop(self, *largs):
         self.mqtt_client.stop_listening()
