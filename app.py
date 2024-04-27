@@ -188,18 +188,6 @@ class MainApp(MDApp):
         # Set default loading image
         Loader.loading_image = Image('./images/item_placeholder.png')
 
-        # Read in all shelves
-        for shelf_id in SHELF_DATA:
-            items = list()
-            conversion_factors = list()
-            for item, conversion_factor in SHELF_DATA[shelf_id]:
-                items.append(database.get_item(item))
-                conversion_factors.append(conversion_factor)
-            shelf = models.Shelf(items)
-            for i in range(len(shelf.slots)):
-                shelf.slots[i].set_conversion_factor(conversion_factors[i])
-            self.connected_shelves[shelf_id] = shelf
-
         self.root = BoxLayout()
 
         self.root.add_widget(Builder.load_file('app.kv'))
@@ -214,6 +202,18 @@ class MainApp(MDApp):
         self.mqtt_client.set_rfid_user_callback(self.user_tap_callback)
         self.mqtt_client.set_shelf_data_callback(self.shelf_data_callback)
         self.mqtt_client.set_door_closed_callback(self.door_closed_callback)
+
+        # Read in all shelves
+        for shelf_id in SHELF_DATA:
+            items = list()
+            conversion_factors = list()
+            for item, conversion_factor in SHELF_DATA[shelf_id]:
+                items.append(database.get_item(item))
+                conversion_factors.append(conversion_factor)
+            shelf = models.Shelf(items)
+            for i in range(len(shelf.slots)):
+                shelf.slots[i].set_conversion_factor(conversion_factors[i])
+            self.connected_shelves[shelf_id] = shelf
 
     @mainthread
     def user_tap_callback(self, user_txt):
