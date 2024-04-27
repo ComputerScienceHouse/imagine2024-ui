@@ -152,7 +152,7 @@ class MainApp(MDApp):
         self.root.add_widget(Builder.load_file('app.kv'))
         self.cart_screen: CartScreen = self.root.children[0].screens[1]
 
-        self.root.children[0].current = 'Cancel'
+        self.root.children[0].current = 'Start'
         self.state = States.WAITING_FOR_USER_TOKEN
 
         self.mqtt_client = MQTT()
