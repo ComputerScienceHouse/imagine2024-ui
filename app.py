@@ -208,7 +208,7 @@ class MainApp(MDApp):
             items = list()
             conversion_factors = list()
             for item, conversion_factor in SHELF_DATA[shelf_id]:
-                items.append(database.get_item(item))
+                items.append(MOCK_ITEM)
                 conversion_factors.append(conversion_factor)
             shelf = models.Shelf(items)
             for i in range(len(shelf.slots)):
