@@ -91,6 +91,9 @@ class StartScreen(MDScreen):
 class AttractScreen(MDScreen):
     pass
 
+class CancelScreen(MDScreen):
+    pass
+
 
 class CartItem(MDListItem):
     title = StringProperty()
@@ -168,6 +171,15 @@ class MainApp(MDApp):
         self.root.children[0].current = 'Cart'
         # TODO open door
         self.state = States.CART_DOOR_OPEN
+
+    def cancel_transaction(self):
+        """
+        Cancel transaction
+        :return:
+        """
+        self.state = States.CANCEL_WAIT_FOR_DOOR_CLOSE
+        self.root.children[0].transition.direction = 'left'
+        self.root.children[0].current = 'Cancel'
 
     def stop(self, *largs):
         self.mqtt_client.stop_listening()

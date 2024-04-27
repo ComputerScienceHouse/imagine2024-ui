@@ -79,6 +79,7 @@ ScreenManager:
                     background_normal: ''
                     background_down: 'images/oof.png'
                     background_color: 0.9686, 0.4118, 0.0078, 1
+                    on_press: app.cancel_transaction()
 
                 BoxLayout:
                     size_hint: (1, 5)
@@ -152,6 +153,14 @@ ScreenManager:
                 name: 'Isaac'
                 job_title: 'Cool Guy'
                 major: 'CS'
+
+    CancelScreen:
+        md_bg_color: self.theme_cls.backgroundColor
+        name: 'Cancel'
+
+        Label:
+            text: 'Close door to end transaction'
+            color: 0, 0, 0, 1
 
     AttractScreen:
         name: 'Attract'
