@@ -89,7 +89,7 @@ class MainApp(MDApp):
         self.mqtt_client = None
 
     def build(self):
-        Window.size = (800,400)
+        Window.size = (800,480)
         if RUNNING_ON_TARGET:
             Window.show_cursor = False
 
