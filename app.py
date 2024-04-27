@@ -38,6 +38,11 @@ class InfoScreen(MDScreen):
 class CartScreen(Screen):
     cart_items = ListProperty([])
 
+    def _refresh_cart(self):
+        cart_view = self.children[1].children[1].children[0]
+        cart_view.data = [{'title': item['title'], 'source': item['source'], 'price': item['price'], 'quantity': item['quantity']} for item in self.cart_items]
+        cart_view.refresh_from_data()
+
     def add_item(self, item: models.Item, quantity: int):
         """
         Add an item to the
@@ -47,11 +52,36 @@ class CartScreen(Screen):
         """
         item_to_add = {'title': str(item.name), 'source': str(item.thumbnail_url), 'price': str(item.price), 'quantity': str(quantity)}
         self.cart_items.insert(0, item_to_add)
+        self._refresh_cart()
 
-    def refresh_cart(self):
-        cart_view = self.children[1].children[1].children[0]
-        cart_view.data = [{'title': item['title'], 'source': item['source'], 'price': item['price'], 'quantity': item['quantity']} for item in self.cart_items]
-        cart_view.refresh_from_data()
+    def remove_item(self, item: models.Item, quantity_to_remove: int):
+        """
+        Remove an item from the cart
+        :param item: Item to remove
+        :param quantity_to_remove: Quantity to remove
+        :return:
+        """
+        for i in range(len(self.cart_items)):
+            if self.cart_items[i].name == item.name:
+                # This item is the one to remove
+                new_quantity = self.cart_items[i].quantity - quantity_to_remove
+                if new_quantity <= 0:
+                    # Remove this item completely
+                    self.cart_items.remove(i)
+                else:
+                    # Adjust the quantity of this item
+                    self.cart_items[i].quantity = new_quantity
+                # Refresh view
+                self._refresh_cart()
+                return
+
+    def empty_cart(self):
+        """
+        Empty the cart
+        :return:
+        """
+        self.cart_items.clear()
+        self._refresh_cart()
 
 
 class StartScreen(MDScreen):
@@ -93,11 +123,13 @@ class MainApp(MDApp):
 
     current_user: models.User = None
     state: States
+    cart_screen: CartScreen | None
 
     def __init__(self, **kwargs):
         super().__init__()
         self.mqtt_client = None
         self.state = States.WAITING_FOR_USER_TOKEN
+        self.cart_screen = None
 
     def build(self):
         Window.size = (800,480)
@@ -110,6 +142,7 @@ class MainApp(MDApp):
         self.root = BoxLayout()
 
         self.root.add_widget(Builder.load_file('app.kv'))
+        self.cart_screen: CartScreen = self.root.children[0].screens[1]
 
         self.root.children[0].current = 'Start'
         self.state = States.WAITING_FOR_USER_TOKEN
@@ -123,8 +156,18 @@ class MainApp(MDApp):
     def user_tap_callback(self, user):
         if self.current_user is None:
             self.current_user = user
-            self.root.children[0].transition.direction = 'left'
-            self.root.children[0].current = 'Cart'
+            self.open_cart_screen()
+
+    def open_cart_screen(self):
+        """
+        Open the cart screen
+        :return:
+        """
+        self.cart_screen.empty_cart()
+        self.root.children[0].transition.direction = 'left'
+        self.root.children[0].current = 'Cart'
+        # TODO open door
+        self.state = States.CART_DOOR_OPEN
 
     def stop(self, *largs):
         self.mqtt_client.stop_listening()
