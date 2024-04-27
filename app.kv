@@ -190,15 +190,15 @@ ScreenManager:
                 text: 'Open Door'
 
         MDGridLayout:
-            adaptive_height: True
-
-            MDButton:
-                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                style: 'filled'
-                on_press:
-                # TODO: open door function
-                MDButtonText:
-                    text: 'Open Door'
+            id: grid_layout
+            cols: 4
+            size_hint: None, None
+            size: self.minimum_size
+            padding: "10dp"
+            spacing: "10dp"
+            ShelfItem:
+                row: 1
+                col: 1
 
         # weight values of all shelves (4 shelves with 4 slot) see each value of each slot
         # calibration button to get weights of individual items
@@ -281,3 +281,31 @@ ScreenManager:
         color: "black"
         halign: "center"
         padding: "4dp", "4dp"
+
+#<ShelfItem>
+#    BoxLayout:
+#        orientation: 'vertical'
+#        #height: dp(200)  # Define a fixed height for the layout
+#        #spacing: dp(10)
+#        MDLabel:
+#            text: root.text
+#            #size_hint_x: None
+#            #width: dp(200)  # Set width based on text
+#        MDButton:
+#            style: 'filled'
+#            #width: dp(130)
+#            on_press:
+#                # TODO: open door function
+#            MDButtonText:
+#                #size_hint_x: None
+#                text: 'Calibrate'
+
+<ShelfItem>:
+    MDLabel:
+        text: root.text
+        halign: "center"
+    MDButton:
+        on_release: root.calibrate()
+        MDButtonText:
+            text: "Calibrate"
+

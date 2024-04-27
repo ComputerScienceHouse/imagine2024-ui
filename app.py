@@ -12,7 +12,7 @@ from kivymd.uix.card import MDCard
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.list.list import MDListItem
 
-from kivy.properties import StringProperty, ListProperty
+from kivy.properties import StringProperty, ListProperty, NumericProperty
 import models
 from utils.mqtt import MQTT
 from kivy.properties import StringProperty
@@ -58,8 +58,9 @@ class AttractScreen(MDScreen):
     pass
 
 class DebugScreen(MDScreen):
-    pass
-
+    def open_door(self):
+        print("Opening door")
+        pass
 
 class CartItem(MDListItem):
     title = StringProperty()
@@ -72,6 +73,20 @@ class ImageButton(Widget):
     source = StringProperty()
     text = StringProperty()
 
+
+class ShelfItem(BoxLayout):
+    col = NumericProperty()
+    row = NumericProperty()
+    text = StringProperty()
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.text = f"Col: {self.col}  Row: {self.row}"
+        self.size_hint = (None, None)
+        self.size = ("120dp", "120dp")
+
+    def calibrate(self):
+        pass
 
 class MemberCard(MDCard):
     name = StringProperty()
@@ -86,6 +101,8 @@ class MainApp(MDApp):
     def __init__(self, **kwargs):
         super().__init__()
         self.mqtt_client = None
+
+
 
     def build(self):
         Window.size = (800,480)
