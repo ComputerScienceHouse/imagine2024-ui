@@ -117,13 +117,16 @@ def is_reachable() -> bool:
     Check if the database is reachable
     :return: True if the database is reachable, False otherwise
     """
-    print("Check If Reachable (GET)")
-    try:
-        requests.get(API_ENDPOINT, headers=REQUEST_HEADERS)
+    if USE_MOCK_DATA:
         return True
-    except requests.RequestException:
-        print(f"\tExperienced Request Exception")
-        return False
+    else:
+        print("Check If Reachable (GET)")
+        try:
+            requests.get(API_ENDPOINT, headers=REQUEST_HEADERS)
+            return True
+        except requests.RequestException:
+            print(f"\tExperienced Request Exception")
+            return False
 
 
 def get_items() -> List[Item]:
