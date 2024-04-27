@@ -25,6 +25,7 @@ import rfid_reader
 from enum import Enum
 
 RUNNING_ON_TARGET = False # Store if this is running on raspberry pi
+MOCK_ITEM = models.Item(1, "Swedish Fish", 11111, 3.19, 5, 266, 26, 'http://placehold.jp/150x150.png', 'pouch')
 
 # Check if this is running on Raspberry Pi
 if platform.system() == "Linux" and "rpi" in platform.uname().release:
@@ -164,6 +165,7 @@ class MainApp(MDApp):
         :return:
         """
         self.cart_screen.empty_cart()
+        self.cart_screen.add_item(MOCK_ITEM, 4)
         self.root.children[0].transition.direction = 'left'
         self.root.children[0].current = 'Cart'
         # TODO open door
