@@ -30,7 +30,7 @@ RUNNING_ON_TARGET = False # Store if this is running on raspberry pi
 if platform.system() == "Linux" and "rpi" in platform.uname().release:
     RUNNING_ON_TARGET = True
 
-MOCK_ITEM = models.Item(1, "Swedish Fish", 11111, 3.19, 5, 266, 10, 'http://placehold.jp/150x150.png', 'pouch')
+MOCK_ITEM = models.Item(1, "Swedish Fish", 11111, 3.19, 5, 266, 26, 'http://placehold.jp/150x150.png', 'pouch')
 
 
 class InfoScreen(MDScreen):
