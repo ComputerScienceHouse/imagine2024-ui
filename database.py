@@ -214,9 +214,9 @@ def get_user(user_id=None, user_token=None) -> User | None:
         if user_token is not None:
             # Get user from token
             print(f"GET /users/{user_token}")
-            for user in MOCK_USERS.values():
-                if user.token == user_token:
-                    return user
+            for user_number in MOCK_USERS:
+                if MOCK_USERS[user_number].token == user_token:
+                    return MOCK_USERS[user_number]
             return None
         # Check if user id should be used
         elif user_id is not None:
