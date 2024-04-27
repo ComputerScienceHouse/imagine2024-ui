@@ -186,9 +186,10 @@ class Shelf:
             # Make sure a slot corresponds to this weight
             if i < len(self.slots):
                 # Update the weight
-                quantity_adjust = self.slots[i].update(raw_weights[i])
-                if quantity_adjust != 0:
-                    result.append((self.items[i], quantity_adjust))
+                if self.items[i] is not None:
+                    quantity_adjust = self.slots[i].update(raw_weights[i])
+                    if quantity_adjust != 0:
+                        result.append((self.items[i], quantity_adjust))
 
         return result
 
