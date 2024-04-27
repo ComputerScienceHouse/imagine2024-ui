@@ -22,6 +22,7 @@ from kivy.uix.widget import Widget
 import database
 import models
 import rfid_reader
+from enum import Enum
 
 RUNNING_ON_TARGET = False # Store if this is running on raspberry pi
 
@@ -79,13 +80,24 @@ class MemberCard(MDCard):
     major = StringProperty()
 
 
+class States(Enum):
+    WAITING_FOR_USER_TOKEN = 1
+    CART_DOOR_OPEN = 2
+    THANK_YOU = 3
+    CANCEL_WAIT_FOR_DOOR_CLOSE = 4
+    DEBUG = 5
+    ABOUT = 6
+
+
 class MainApp(MDApp):
 
     current_user: models.User = None
+    state: States
 
     def __init__(self, **kwargs):
         super().__init__()
         self.mqtt_client = None
+        self.state = States.WAITING_FOR_USER_TOKEN
 
     def build(self):
         Window.size = (800,480)
@@ -100,6 +112,7 @@ class MainApp(MDApp):
         self.root.add_widget(Builder.load_file('app.kv'))
 
         self.root.children[0].current = 'Start'
+        self.state = States.WAITING_FOR_USER_TOKEN
 
         self.mqtt_client = MQTT()
         self.mqtt_client.start_listening()
