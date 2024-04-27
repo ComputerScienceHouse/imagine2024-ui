@@ -1,5 +1,5 @@
 from kivy.loader import Loader
-from typing import List
+from typing import List, Any
 
 WEIGHT_UNIT = "g"
 STD_MULTIPLIER = 1
@@ -70,15 +70,9 @@ class Item:
                 f'{self.std_weight}{WEIGHT_UNIT},{self.thumbnail_url},'
                 f'{self.vision_class}]')
 
-
-class Shelf:
-    # TODO implement Shelf
-    pass
-
-
 class Slot:
 
-    parent_shelf: Shelf
+    parent_shelf: Any
     item: Item
     _conversion_factor: float
     # Weight of iteration before ROLLING_AVERAGE (CERTAINTY_CONSTANT + 1)
@@ -88,7 +82,12 @@ class Slot:
     _last_pos = False
     _last_neg = False
 
-    def __init__(self, parent_shelf: Shelf, item: Item):
+    def __init__(self, parent_shelf: Any, item: Item):
+        """
+        Create a Slot
+        :param parent_shelf: Parent shelf
+        :param item: Item stocked in this slot
+        """
         # Set passed in values
         self.parent_shelf = parent_shelf
         self.item = item
