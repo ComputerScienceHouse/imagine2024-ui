@@ -31,11 +31,17 @@ if platform.system() == "Linux" and "rpi" in platform.uname().release:
     RUNNING_ON_TARGET = True
 
 MOCK_ITEM = models.Item(1, "Swedish Fish", 11111, 3.19, 5, 266, 26, 'http://placehold.jp/150x150.png', 'pouch')
+# Hardcoded shelf data to use. Maps shelf ID (MAC address) to list of items (position indicates slot, 0 -> 4)
+SHELF_DATA = {
+    'id1': [MOCK_ITEM, MOCK_ITEM, MOCK_ITEM, MOCK_ITEM],
+    'id2': [MOCK_ITEM, MOCK_ITEM, MOCK_ITEM, MOCK_ITEM],
+    'id3': [MOCK_ITEM, MOCK_ITEM, MOCK_ITEM, MOCK_ITEM],
+    'id4': [MOCK_ITEM, MOCK_ITEM, MOCK_ITEM, MOCK_ITEM]
+}
 
 
 class InfoScreen(MDScreen):
     pass
-
 
 
 class CartScreen(Screen):
@@ -105,7 +111,7 @@ class MainApp(MDApp):
         shelf = models.Shelf()
         self.slot = models.Slot(shelf, item)
         self.slot.set_conversion_factor(0.223)
-        
+
         self.root = BoxLayout()
 
         self.root.add_widget(Builder.load_file('app.kv'))
@@ -145,12 +151,15 @@ class MainApp(MDApp):
                 raise Exception("IncorrectFormat: Slot values incorrect format (not list)")
 
             if shelf_id in self.connected_shelves:
-                # Shelf already exists
+                # Shelf is already connected
                 self.connected_shelves[shelf_id].update(slot_values)
             else:
-                # Shelf does not exist
-                # Create new shelf with items
-                items_for_shelf = [MOCK_ITEM, MOCK_ITEM, MOCK_ITEM, MOCK_ITEM]
+                # Shelf is not connected
+                # Check if the shelf with this ID is included in possible shelves
+                if shelf_id not in SHELF_DATA:
+                    raise Exception(f"ShelfDoesNotExist: Provided shelf ID was not hardcoded into program (id: {shelf_id})")
+                # Get data for this shelf from hardcoded shelves
+                items_for_shelf = SHELF_DATA[shelf_id]
                 self.connected_shelves[shelf_id] = models.Shelf(items_for_shelf)
                 # Update weight values
                 self.connected_shelves[shelf_id].update(slot_values)
