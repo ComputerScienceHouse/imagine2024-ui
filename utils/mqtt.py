@@ -12,7 +12,7 @@ from typing import Callable
 from typing import Any
 import database
 
-MQTT_BROKER_ADDRESS = "test.mosquitto.org"
+MQTT_BROKER_ADDRESS = "localhost"
 MQTT_BROKER_PORT = 1883
 
 
