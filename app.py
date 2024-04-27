@@ -56,6 +56,7 @@ class CartScreen(Screen):
 
     def add_item(self, item: models.Item, quantity: int):
         quantity = abs(quantity)
+        print(f"NEW QUANTITY {quantity}")
         """
         Add an item to the
         :param item:
@@ -66,7 +67,8 @@ class CartScreen(Screen):
         for i in range(len(self.cart_items)):
             if self.cart_items[i]['title'] == item.name:
                 # Item is already in the cart
-                self.cart_items[i]['quantity'] = int(self.cart_items[i]['quantity']) + quantity
+                self.cart_items[i]['quantity'] = str(int(self.cart_items[i]['quantity']) + quantity)
+                self._refresh_cart()
                 return
         item_to_add = {'title': str(item.name), 'source': str(item.thumbnail_url), 'price': str(item.price), 'quantity': str(quantity)}
         self.cart_items.insert(0, item_to_add)
