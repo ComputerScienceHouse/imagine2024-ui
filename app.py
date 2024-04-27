@@ -33,12 +33,13 @@ if platform.system() == "Linux" and "rpi" in platform.uname().release:
     RUNNING_ON_TARGET = True
 
 MOCK_ITEM = models.Item(1, "Swedish Fish", 11111, 3.19, 5, 266, 26, 'http://placehold.jp/150x150.png', 'pouch')
-# Hardcoded shelf data to use. Maps shelf ID (MAC address) to list of items (position indicates slot, 0 -> 4)
+# HARDCODED SHELF DATA
+# Shelf Address -> Slot number (list) -> Tuple (Item ID in database, division factor for weight)
 SHELF_DATA = {
-    '80:65:99:E3:8B:92': [MOCK_ITEM, MOCK_ITEM, MOCK_ITEM, MOCK_ITEM],
-    'id2': [MOCK_ITEM, MOCK_ITEM, MOCK_ITEM, MOCK_ITEM],
-    'id3': [MOCK_ITEM, MOCK_ITEM, MOCK_ITEM, MOCK_ITEM],
-    'id4': [MOCK_ITEM, MOCK_ITEM, MOCK_ITEM, MOCK_ITEM]
+    '80:65:99:E3:8B:92': [(1, 0.26), (1, 0.26), (1, 0.26), (1, 0.26)],
+    'id2': [(1, 0.26), (1, 0.26), (1, 0.26), (1, 0.26)],
+    'id3': [(1, 0.26), (1, 0.26), (1, 0.26), (1, 0.26)],
+    'id4': [(1, 0.26), (1, 0.26), (1, 0.26), (1, 0.26)]
 }
 
 
@@ -50,7 +51,7 @@ class CartScreen(Screen):
     cart_items = ListProperty([])
 
     def _refresh_cart(self):
-        cart_view = self.children[1].children[1].children[0]
+        cart_view = self.children[0].children[1].children[0]
         cart_view.data = [{'title': item['title'], 'source': item['source'], 'price': item['price'], 'quantity': item['quantity']} for item in self.cart_items]
         cart_view.refresh_from_data()
 
@@ -187,6 +188,18 @@ class MainApp(MDApp):
         # Set default loading image
         Loader.loading_image = Image('./images/item_placeholder.png')
 
+        # Read in all shelves
+        for shelf_id in SHELF_DATA:
+            items = list()
+            conversion_factors = list()
+            for item, conversion_factor in SHELF_DATA[shelf_id]:
+                items.append(database.get_item(item))
+                conversion_factors.append(conversion_factor)
+            shelf = models.Shelf(items)
+            for i in range(len(shelf.slots)):
+                shelf.slots[i].set_conversion_factor(conversion_factors[i])
+            self.connected_shelves[shelf_id] = shelf
+
         self.root = BoxLayout()
 
         self.root.add_widget(Builder.load_file('app.kv'))
@@ -273,7 +286,7 @@ class MainApp(MDApp):
         :return:
         """
         #try:
-            # Deconstruct JSON data
+        # Deconstruct JSON data
         data = json.loads(data_string)
         print(data)
         shelf_id = data['id']
@@ -284,33 +297,14 @@ class MainApp(MDApp):
         if not isinstance(slot_values, list):
             raise Exception("IncorrectFormat: Slot values incorrect format (not list)")
 
-        if shelf_id in self.connected_shelves:
-            # Shelf is already connected
-            adjustments = self.connected_shelves[shelf_id].update(slot_values)
-            for item, quantity_adjust in adjustments:
-                if quantity_adjust < 0:
-                    self.cart_screen.add_item(item, quantity_adjust)
-                    print("ADD ITEM TO CART")
-                elif quantity_adjust > 0:
-                    self.cart_screen.remove_item(item, quantity_adjust)
-                    print("REMOVE ITEM FROM CART")
-        else:
-            # Shelf is not connected
-            # Check if the shelf with this ID is included in possible shelves
-            if shelf_id not in SHELF_DATA:
-                raise Exception(f"ShelfDoesNotExist: Provided shelf ID was not hardcoded into program (id: {shelf_id})")
-            # Get data for this shelf from hardcoded shelves
-            items_for_shelf = SHELF_DATA[shelf_id]
-            self.connected_shelves[shelf_id] = models.Shelf(items_for_shelf)
-            for slot in self.connected_shelves[shelf_id].slots:
-                slot.set_conversion_factor(0.215)
-            # Update weight values
-            adjustments = self.connected_shelves[shelf_id].update(slot_values)
-            for item, quantity_adjust in adjustments:
-                if quantity_adjust > 0:
-                    self.cart_screen.add_item(item, quantity_adjust)
-                elif quantity_adjust < 0:
-                    self.cart_screen.remove_item(item, quantity_adjust)
+        adjustments = self.connected_shelves[shelf_id].update(slot_values)
+        for item, quantity_adjust in adjustments:
+            if quantity_adjust < 0:
+                self.cart_screen.add_item(item, quantity_adjust)
+                print("ADD ITEM TO CART")
+            elif quantity_adjust > 0:
+                self.cart_screen.remove_item(item, quantity_adjust)
+                print("REMOVE ITEM FROM CART")
 
         # except KeyError as key_error:
         #     print("KeyError when parsing shelf data from MQTT")

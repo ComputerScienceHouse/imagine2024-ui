@@ -81,7 +81,7 @@ AUTHORIZATION_KEY = os.getenv("BNB_AUTHORIZATION_KEY", '')
 
 MOCK_ITEMS = {
 
-    1: Item(1, "Mock Item 1", "123456789012", 9.99, 100, 0.5, 0.1, "images/oof.png", "rectangle"),
+    1: Item(1, "Mock Item 1", "123456789012", 9.99, 100, 226, 10, "images/oof.png", "rectangle"),
     2: Item(2, "Mock Item 2", "234567890123", 19.99, 50, 1.0, 0.2, "images/oof.png", "cylinder"),
     3: Item(3, "Mock Item 3", "345678901234", 29.99, 75, 0.8, 0.15, "images/oof.png", "bottle"),
     4: Item(4, "Mock Item 4", "456789012345", 14.99, 120, 0.6, 0.12, "images/oof.png", "pouch"),

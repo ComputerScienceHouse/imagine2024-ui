@@ -70,9 +70,9 @@ class Item:
                 f'{self.std_weight}{WEIGHT_UNIT},{self.thumbnail_url},'
                 f'{self.vision_class}]')
 
+
 class Slot:
 
-    parent_shelf: Any
     item: Item
     _conversion_factor: float
     # Weight of iteration before ROLLING_AVERAGE (CERTAINTY_CONSTANT + 1)
@@ -82,14 +82,12 @@ class Slot:
     _last_pos = False
     _last_neg = False
 
-    def __init__(self, parent_shelf: Any, item: Item):
+    def __init__(self, item: Item):
         """
         Create a Slot
-        :param parent_shelf: Parent shelf
         :param item: Item stocked in this slot
         """
         # Set passed in values
-        self.parent_shelf = parent_shelf
         self.item = item
         # Initialize weights and conversion factor
         self._conversion_factor = 1
@@ -173,7 +171,7 @@ class Shelf:
         self.slots = list()
         self.items = list()
         for item in items:
-            self.slots.append(Slot(self, item))
+            self.slots.append(Slot(item))
             self.items.append(item)
 
     def update(self, raw_weights: List[float]):
