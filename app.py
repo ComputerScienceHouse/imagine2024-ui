@@ -111,7 +111,7 @@ class MainApp(MDApp):
         self.mqtt_client.start_listening()
 
         self.mqtt_client.set_rfid_user_callback(self.user_tap_callback)
-        self.mqtt_client.set_shelf_data_callback(self.mqtt_data_callback)
+        self.mqtt_client.set_shelf_data_callback(self.shelf_data_callback)
 
     @mainthread
     def user_tap_callback(self, user):
@@ -121,7 +121,7 @@ class MainApp(MDApp):
             self.root.children[0].current = 'Cart'
 
     @mainthread
-    def mqtt_data_callback(self, data_string):
+    def shelf_data_callback(self, data_string):
         data = json.loads(data_string)
         slot_values = data['data']
         self.slot.update(slot_values[0])
