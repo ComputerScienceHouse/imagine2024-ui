@@ -178,17 +178,18 @@ class MainApp(MDApp):
         self.mqtt_client.set_door_closed_callback(self.door_closed_callback)
 
     @mainthread
-    def user_tap_callback(self, user_json):
-        # Construct JSON into User object
-        data = json.loads(user_json)
+    def user_tap_callback(self, user_txt):
+        if user_txt[:5] != "User[":
+            return
+        user_split = user_txt[5:].split(',')
         user = models.User(
-            data['id'],
-            data['name'],
-            data['token'],
-            data['balance'],
-            data['payment_type'],
-            data['email'],
-            data['phone']
+            user_split[0],
+            user_split[1],
+            user_split[2],
+            user_split[3][0:],
+            user_split[4],
+            user_split[5],
+            user_split[6]
         )
         if self.state == States.WAITING_FOR_USER_TOKEN:
             if 'admin' in user.name:
