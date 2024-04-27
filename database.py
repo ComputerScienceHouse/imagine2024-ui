@@ -80,30 +80,28 @@ API_ENDPOINT = os.getenv("BNB_API_ENDPOINT", '')
 AUTHORIZATION_KEY = os.getenv("BNB_AUTHORIZATION_KEY", '')
 
 MOCK_ITEMS = {
-
-    1: Item(1, "Mock Item 1", "123456789012", 9.99, 100, 226, 10, "images/oof.png", "rectangle"),
-    2: Item(2, "Mock Item 2", "234567890123", 19.99, 50, 1.0, 0.2, "images/oof.png", "cylinder"),
-    3: Item(3, "Mock Item 3", "345678901234", 29.99, 75, 0.8, 0.15, "images/oof.png", "bottle"),
-    4: Item(4, "Mock Item 4", "456789012345", 14.99, 120, 0.6, 0.12, "images/oof.png", "pouch"),
-    5: Item(5, "Mock Item 5", "567890123456", 24.99, 90, 1.2, 0.25, "images/oof.png", "cylinder"),
-    6: Item(6, "Mock Item 6", "678901234567", 34.99, 60, 0.9, 0.18, "images/oof.png", "rectangle"),
-    7: Item(7, "Mock Item 7", "789012345678", 19.99, 100, 0.7, 0.14, "images/oof.png", "pouch"),
-    8: Item(8, "Mock Item 8", "890123456789", 39.99, 40, 1.5, 0.3, "images/oof.png", "rectangle"),
-    9: Item(9, "Mock Item 9", "901234567890", 49.99, 30, 1.1, 0.22, "images/oof.png", "cylinder"),
-    10: Item(10, "Mock Item 10", "012345678901", 29.99, 80, 0.9, 0.18, "images/oof.png", "bottle"),
+    1: Item(1, "Little Bites Chocolate", "123456789012", 2.10, 100, 47, 10, "images/item_placeholder.png", "pouch"),
+    2: Item(2, "Little Bites Party", "234567890123", 2.10, 50, 47, 10, "images/item_placeholder.png", "pouch"),
+    3: Item(3, "Skittles Gummies", "345678901234", 2.40, 75, 164.4, 15, "images/item_placeholder.png", "bottle"),
+    4: Item(4, "Swedish Fish Mini Tropical", "456789012345", 3.50, 120, 226, 10, "images/item_placeholder.png", "pouch"),
+    5: Item(5, "Sour Patch Peach", "567890123456", 3.50, 90, 228, 15, "images/item_placeholder.png", "cylinder"),
+    6: Item(6, "Brownie Brittle Chocolate Chip", "678901234567", 34.99, 60, 78, 10, "images/item_placeholder.png", "rectangle"),
+    7: Item(7, "Swedish Fish Original", "789012345678", 19.99, 100, 141, 10, "images/item_placeholder.png", "pouch"),
+    8: Item(8, "Welch's Fruit Snacks", "890123456789", 39.99, 40, 142, 14, "images/item_placeholder.png", "rectangle"),
 }
 
 MOCK_USERS = {
-    1: User(1, "John Doe", "", 20.00, "credit", "john.doe@example.com", "+1234567890"),
-    2: User(2, "Jane Smith", "", 13.75, "dining", "jane.smith@example.com", "+1987654321"),
-    3: User(3, "Alice Johnson", "", 18.33, "imagine", "alice.johnson@example.com", "+1122334455"),
-    4: User(4, "Michael Brown", "", 12.75, "credit", "michael.brown@example.com", "+1555123456"),
-    5: User(5, "Emily Wilson", "", 15.50, "dining", "emily.wilson@example.com", "+16667778888"),
-    6: User(6, "David Clark", "", 18.95, "imagine", "david.clark@example.com", "+17778889999"),
-    7: User(7, "Sarah Martinez", "", 11.99, "credit", "sarah.martinez@example.com", "+18889990000"),
-    8: User(8, "James Taylor", "", 17.25, "dining", "james.taylor@example.com", "+19990001111"),
-    9: User(9, "Emma Harris", "", 19.75, "imagine", "emma.harris@example.com", "+12344321543"),
-    10: User(10, "Daniel Anderson", "", 14.30, "credit", "daniel.anderson@example.com", "+15551239876"),
+    1: User(1, "Tag 1", "258427912599", 20.00, "imagine", "", ""),
+    2: User(1, "Tag 2", "422252369364", 20.00, "imagine", "", ""),
+    3: User(1, "Tag 3", "1015231349004", 20.00, "imagine", "", ""),
+    4: User(1, "Tag 4", "287648699740", 20.00, "imagine", "", ""),
+    5: User(1, "Tag 5", "328036581804", 20.00, "imagine", "", ""),
+    6: User(1, "Tag 6", "78789203372", 20.00, "imagine", "", ""),
+    7: User(1, "Tag 7", "602914488684", 20.00, "imagine", "", ""),
+    8: User(1, "Tag 8", "81490269452", 20.00, "imagine", "", ""),
+    9: User(1, "Tag 9", "150209746236", 20.00, "imagine", "", ""),
+    10: User(1, "Tag 10", "78805980589", 20.00, "imagine", "", ""),
+
 }
 
 # Use mock data if USE_MOCK_DATA environment variable is set to 'true'. If it
