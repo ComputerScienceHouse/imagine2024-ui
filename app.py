@@ -285,7 +285,13 @@ class MainApp(MDApp):
                 items_for_shelf = SHELF_DATA[shelf_id]
                 self.connected_shelves[shelf_id] = models.Shelf(items_for_shelf)
                 # Update weight values
-                self.connected_shelves[shelf_id].update(slot_values)
+                adjustments = self.connected_shelves[shelf_id].update(slot_values)
+                for item, quantity_adjust in adjustments:
+                    if quantity_adjust > 0:
+                        self.cart_screen.add_item(item, quantity_adjust)
+                    elif quantity_adjust < 0:
+                        self.cart_screen.remove_item(item, quantity_adjust)
+                        
         except KeyError as key_error:
             print("KeyError when parsing shelf data from MQTT")
             print(f"\tData: '{data_string}'")

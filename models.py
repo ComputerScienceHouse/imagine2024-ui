@@ -118,7 +118,7 @@ class Slot:
         """
         return self._conversion_factor
 
-    def update(self, raw_weight_value):
+    def update(self, raw_weight_value) -> int:
         """
         Update this slot object with its newly received weight value
         :param raw_weight_value: Raw weight value
@@ -132,6 +132,7 @@ class Slot:
         # Difference from previous iteration to now
         difference_g = rolling_average - self._previous_weight_g
         remainder_weight = difference_g % self.item.avg_weight
+        quantity_to_modify_cart = 0
         # Check that the remainder is within the top std_dev or bottom_std of the avg_weight
         if remainder_weight >= self.item.avg_weight - self.item.std_weight or remainder_weight <= self.item.avg_weight + self.item.std_weight:
             # Calculate quantity removed
@@ -139,12 +140,14 @@ class Slot:
             if quantity > 0:
                 if not self._last_pos:
                     print(f"\t{quantity} item(s) placed back")
+                    quantity_to_modify_cart = quantity
                     self._last_pos = True
                 else:
                     self._last_pos = False
             elif quantity < 0:
                 if not self._last_neg:
                     print(f"\t{quantity} item(s) removed")
+                    quantity_to_modify_cart = -quantity
                     self._last_neg = True
                 else:
                     self._last_neg = False
@@ -154,11 +157,13 @@ class Slot:
         self._last_weights_store.insert(0, normalized_weight_g)
         self._last_weights_store.pop()
         self._previous_weight_g = oldest_weight
+        return quantity_to_modify_cart
 
 
 class Shelf:
 
     slots: List[Slot]
+    items: List[Item]
 
     def __init__(self, items: List[Item]):
         """
@@ -168,19 +173,25 @@ class Shelf:
         self.slots = list()
         for item in items:
             self.slots.append(Slot(self, item))
+            self.items.append(item)
 
     def update(self, raw_weights: List[float]):
         """
         Update all slots in this shelf with the raw weights
         :param raw_weights:
-        :return:
+        :return: List of tuples (item, quantity_adjust)
         """
+        result = list()
         # iterate through all weight values
         for i in range(len(raw_weights)):
             # Make sure a slot corresponds to this weight
             if i < len(self.slots):
                 # Update the weight
-                self.slots[i].update(raw_weights[i])
+                quantity_adjust = self.slots[i].update(raw_weights[i])
+                if quantity_adjust != 0:
+                    result.append((self.items[i], quantity_adjust))
+
+        return result
 
 
 class Stock:
