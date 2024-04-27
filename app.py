@@ -1,7 +1,7 @@
 import json
 import platform
 import threading
-from typing import List
+from typing import List, Dict
 
 from kivy.clock import mainthread
 from kivy.core.image import Image
@@ -29,6 +29,9 @@ RUNNING_ON_TARGET = False # Store if this is running on raspberry pi
 # Check if this is running on Raspberry Pi
 if platform.system() == "Linux" and "rpi" in platform.uname().release:
     RUNNING_ON_TARGET = True
+
+MOCK_ITEM = models.Item(1, "Swedish Fish", 11111, 3.19, 5, 266, 10, 'http://placehold.jp/150x150.png', 'pouch')
+
 
 class InfoScreen(MDScreen):
     pass
@@ -83,10 +86,12 @@ class MemberCard(MDCard):
 class MainApp(MDApp):
 
     current_user: models.User = None
+    connected_shelves: Dict[str, models.Shelf]
 
     def __init__(self, **kwargs):
         super().__init__()
         self.mqtt_client = None
+        self.connected_shelves = None
 
     def build(self):
         Window.size = (800,480)
@@ -122,10 +127,40 @@ class MainApp(MDApp):
 
     @mainthread
     def shelf_data_callback(self, data_string):
-        data = json.loads(data_string)
-        slot_values = data['data']
-        self.slot.update(slot_values[0])
-        print(data)
+        """
+        Callback function for when data is received for a shelf via MQTT
+        :param data_string: The data string, directly from MQTT
+        :return:
+        """
+        try:
+            # Deconstruct JSON data
+            data = json.loads(data_string)
+            print(data)
+            shelf_id = data['id']
+            slot_values = data['data']
+            send_time_millis = data['time']
+
+            # Check that slot values are a list
+            if not isinstance(slot_values, list):
+                raise Exception("IncorrectFormat: Slot values incorrect format (not list)")
+
+            if shelf_id in self.connected_shelves:
+                # Shelf already exists
+                self.connected_shelves[shelf_id].update(slot_values)
+            else:
+                # Shelf does not exist
+                # Create new shelf with items
+                items_for_shelf = [MOCK_ITEM, MOCK_ITEM, MOCK_ITEM, MOCK_ITEM]
+                self.connected_shelves[shelf_id] = models.Shelf(items_for_shelf)
+                # Update weight values
+                self.connected_shelves[shelf_id].update(slot_values)
+        except KeyError as key_error:
+            print("KeyError when parsing shelf data from MQTT")
+            print(f"\tData: '{data_string}'")
+            print(f"\tFull exception: {key_error}")
+        except Exception as e:
+            print("Exception occurred when reading shelf data from MQTT")
+            print(f"Full exception: {e}")
 
     def stop(self, *largs):
         self.mqtt_client.stop_listening()
